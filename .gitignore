@@ -1,0 +1,22 @@
+# ideo
+.idea/
+.vscode/
+
+# env
+.venv/
+.env
+
+#bdd
+*.db
+
+#ia
+.cursor/
+.claude/
+CLAUDE.md
+.mcp.json
+
+# dist
+dist/
+
+# mac
+*.DS_Store
