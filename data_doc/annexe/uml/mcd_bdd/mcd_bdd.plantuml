@@ -1,0 +1,144 @@
+@startuml
+!define table(x) class x << (T,#CCCCFF) >>
+!define view(x) class x << (V,#CCFFCC) >>
+!define pk(x) #<u><b>x</b></u>
+!define un(x) -<b>x</b>
+!define ix(x) +<b>x</b>
+!define fk(x,y) ~x <i>references y</i>
+!define pfk(x,y) #<u><b>x</b></u> <i>references y</i>
+!define ifk(x,y) +<b>x</b> <i>references y</i>
+!define ufk(x,y) -<b>x</b> <i>references y</i>
+!define default(x) =x
+!define ai() <b>AutoInc</b>
+!define numberAi() number default(ai())
+!define todo(x) <u>⚠️TODO :</u> x
+!procedure traking()
+  createdAt: datetime
+  createdBy: string 255
+  updatedAt: datetime
+  updatedBy: string 255
+!endprocedure
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+title M.C.D.
+
+table(roles) {
+  pk(id): numeric
+  name: string 16
+}
+
+table(users) {
+  pk(id): numeric
+  speudo: string 30
+  email: string 30
+  password: string 30
+}
+
+table(users_roles) {
+  pk(id_users): numeric
+  pk(id_roles): numeric
+}
+
+table(volumes) {
+  pk(id): uuid
+  pk(id_series): uuid
+  title: string 30
+  number: numeric
+  release_date: date
+  isbn: string 13
+  possessions_count": numeric
+  image_url: string 30
+}
+
+table(possessions) {
+  pk(id): uuid
+  pk(id_user): uuid
+  pk(id_volumes): uuid
+}
+
+table(series) {
+  pk(id): uuid
+  pk(id_publisher): uuid
+  pk(id_genre): uuid
+  title: string 255
+}
+
+table(kinds_series) {
+  pk(id): uuid
+  pk(id_kind): uuid
+  pk(id_serie): uuid
+}
+
+table(kinds) {
+  pk(id): uuid
+  title: string 255
+}
+
+table(publisher) {
+  pk(id): uuid
+  title: string 255
+}
+
+table(genres) {
+  pk(id): uuid
+  title: string 255
+}
+
+table(tasks) {
+  pk(id): uuid
+  pk(id_author): uuid
+  pk(id_jobs): uuid
+  pk(id_serie): uuid
+}
+
+table(authors) {
+  pk(id): uuid
+  name: string 255
+  first_name: string|null 255
+  tasks_count: numeric
+}
+
+table(jobs) {
+  pk(id): uuid
+  title: string 255
+}
+
+table(Interesse_kinds) {
+  pk(id): uuid
+  pk(id_user): uuid
+  pk(id_kind): uuid
+}
+
+table(Interesse_genres) {
+  pk(id): uuid
+  pk(id_user): uuid
+  pk(id_genre): uuid
+}
+
+users  --|> users_roles
+roles --|> users_roles
+
+users  --|> possessions
+volumes --|> possessions
+
+series  --|> kinds_series
+kinds --|> kinds_series
+
+users  --|> Interesse_kinds
+kinds --|> Interesse_kinds
+
+users  --|> Interesse_genres
+genres --|> Interesse_genres
+
+authors  --|> tasks
+jobs --|> tasks
+series --|> tasks
+
+series --|> volumes
+
+publisher --|> series
+
+genres --|> series
+@enduml
