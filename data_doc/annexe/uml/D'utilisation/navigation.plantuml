@@ -1,0 +1,47 @@
+@startuml
+skinparam rectangle {
+  BackgroundColor #F9F9F9
+  BorderColor #333
+  FontSize 14
+}
+
+rectangle "Home\n(anonyme/user/premium)" as HomePage
+rectangle "Login\n(user/premium)" as LoginPage
+rectangle "Register\n(anonyme)" as RegisterPage
+rectangle "Collection\n(user/premium)\n[liste des series dans sa collection]" as CollectionPage
+rectangle "Pile à lire\n(premium)\n[liste des series en cour de lectures]" as PileALirePage
+rectangle "Page série\n(tous)" as PageSeriePage
+rectangle "Page volume\n(tous)" as PageVolumePage
+rectangle "Profil\n(user/premium)" as ProfilPage
+rectangle "Logout\n(user/premium)" as LogoutPage
+
+HomePage --> LoginPage : redirection page Login
+LoginPage --> HomePage : connexion réeusi\nredirection vers home
+LoginPage --> LoginPage : ereur connexion
+
+HomePage --> RegisterPage : S'inscrire
+RegisterPage --> LoginPage : après inscription
+
+HomePage --> CollectionPage : connecté
+HomePage --> PileALirePage : connecté premium
+
+
+
+
+
+
+
+HomePage --> PageSeriePage
+HomePage --> PageVolumePage
+HomePage --> ProfilPage : connecté
+
+
+CollectionPage --> PageSeriePage: redirection ver la page de la serie cliquer
+PageSeriePage --> PageVolumePage: redirection ver la page du volume cliquer
+PageVolumePage --> CollectionPage
+
+ProfilPage --> HomePage : via logo
+ProfilPage --> LogoutPage
+LogoutPage --> HomePage : redirection
+
+@enduml
