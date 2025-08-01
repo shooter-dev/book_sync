@@ -31,9 +31,15 @@ table(roles) {
 
 table(users) {
   pk(id): numeric
-  speudo: string 30
+  pseudo: string 30
   email: string 30
   password: string 30
+}
+
+table(partages) {
+  pk(id): numeric
+  pk(id_user): numeric
+  pk(id_user_ami): numeric
 }
 
 table(users_roles) {
@@ -56,6 +62,7 @@ table(possessions) {
   pk(id): uuid
   pk(id_user): uuid
   pk(id_volumes): uuid
+  ajouter_le: datetime
 }
 
 table(series) {
@@ -63,6 +70,7 @@ table(series) {
   pk(id_publisher): uuid
   pk(id_genre): uuid
   title: string 255
+  adult_content: bool
 }
 
 table(kinds_series) {
@@ -84,6 +92,7 @@ table(publisher) {
 table(genres) {
   pk(id): uuid
   title: string 255
+  to_display: bool
 }
 
 table(tasks) {
@@ -105,13 +114,25 @@ table(jobs) {
   title: string 255
 }
 
-table(Interesse_kinds) {
+table(like_kinds) {
   pk(id): uuid
   pk(id_user): uuid
   pk(id_kind): uuid
 }
 
-table(Interesse_genres) {
+table(like_genres) {
+  pk(id): uuid
+  pk(id_user): uuid
+  pk(id_genre): uuid
+}
+
+table(dislike_genres) {
+  pk(id): uuid
+  pk(id_user): uuid
+  pk(id_genre): uuid
+}
+
+table(dislike_kinds) {
   pk(id): uuid
   pk(id_user): uuid
   pk(id_genre): uuid
@@ -120,17 +141,27 @@ table(Interesse_genres) {
 users  --|> users_roles
 roles --|> users_roles
 
+users --|> partages : user
+users --|> partages : ami
+
 users  --|> possessions
 volumes --|> possessions
 
 series  --|> kinds_series
 kinds --|> kinds_series
 
-users  --|> Interesse_kinds
-kinds --|> Interesse_kinds
+users  --|> like_kinds
+kinds --|> like_kinds
 
-users  --|> Interesse_genres
-genres --|> Interesse_genres
+users  --|> like_genres
+genres --|> like_genres
+
+users  --|> dislike_genres
+genres  --|> dislike_genres
+
+users  --|> dislike_kinds
+kinds  --|> dislike_kinds
+
 
 authors  --|> tasks
 jobs --|> tasks
