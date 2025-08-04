@@ -8,6 +8,7 @@
 
 #bdd
 *.db
+*.sqlite3
 
 #ia
 .cursor/
