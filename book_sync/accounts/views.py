@@ -54,3 +54,6 @@ def login_view(request):
     }
     
     return render(request, 'login.html', context)
+
+def register_view(request):
+    return render(request, 'register.html')

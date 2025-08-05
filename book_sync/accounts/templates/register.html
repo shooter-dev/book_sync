@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1> Inscription</h1>
+<form method="POST">
+  {% csrf_token %}
+  <label>
+    <input type="text" name="email" placeholder="Email">
+    <input type="password" name="mot de passe" placeholder="<mot de passe>">
+    <input type="password" name="Confirmation mot de passe" placeholder="<confirmer votre mot de passe>">
+    <input type="submit" value="Envoyer">
+  </label>
+</form>
+{% endblock %}
+
+
+
+
+
+
+
+
+
