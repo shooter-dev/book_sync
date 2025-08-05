@@ -15,7 +15,7 @@ def login_view(request):
     Gère l'authentification des utilisateurs
     """
     if request.user.is_authenticated:
-        return redirect('app:index')  # Rediriger si déjà connecté
+        return redirect('index')  # Rediriger si déjà connecté
     
     form = AuthenticationForm()
     
