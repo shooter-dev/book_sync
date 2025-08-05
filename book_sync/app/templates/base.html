@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 <body>
@@ -11,4 +15,12 @@
 
 {% endblock %}
 </body>
+<footer>
+    <!-- Footer -->
+        <div class="auth-footer">
+            <p>
+                © 2024 BookSync - Gérez votre collection de livres
+            </p>
+        </div>
+</footer>
 </html>

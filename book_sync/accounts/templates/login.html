@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container dark-mode">
+    <div class="auth-card space-y-8">
+        <!-- Logo/Titre principal -->
+        <div>
+            <h1 class="auth-title mangacollec-red-text">
+                BookSyncddddddddd
+            </h1>
+            <h2 class="auth-subtitle">
+                Connexion
+            </h2>
+            <p class="auth-description">
+                Accédez à votre collection de livres
+            </p>
+        </div>
+
+        <!-- Formulaire de connexion -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Champ nom d'utilisateur -->
+            <div class="form-group">
+                <label for="username" class="form-label">
+                    Nom d'utilisateur
+                </label>
+                <input id="username" name="username" type="text" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Entrez votre nom d'utilisateur">
+            </div>
+
+            <!-- Champ mot de passe -->
+            <div class="form-group">
+                <label for="password" class="form-label">
+                    Mot de passe
+                </label>
+                <input id="password" name="password" type="password" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Entrez votre mot de passe">
+            </div>
+
+            <!-- Options -->
+            <div class="form-options">
+                <div class="checkbox-group">
+                    <input id="remember-me" name="remember-me" type="checkbox" 
+                           class="mangacollec-checkbox">
+                    <label for="remember-me" class="checkbox-label">
+                        Se souvenir de moi
+                    </label>
+                </div>
+                <div>
+                    <a href="#" class="mangacollec-red-text forgot-password">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+            </div>
+
+            <!-- Messages d'erreur -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-message">
+                        <p class="error-title">
+                            {{ message }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="error-message">
+                    <h3 class="error-title">
+                        Erreur de connexion
+                    </h3>
+                    <div class="error-list">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>• {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Bouton de connexion -->
+            <button type="submit" class="mangacollec-red submit-button">
+                Se connecter
+            </button>
+        </form>
+
+        <!-- Lien inscription -->
+        <div class="signup-link">
+            <p>
+                Pas encore de compte ? 
+                <a href="#" class="mangacollec-red-text">
+                    Créer un compte
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
