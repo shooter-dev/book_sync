@@ -1,26 +1,86 @@
 <!DOCTYPE html>
 {% load static %}
 
-<html lang="fr">
+<html lang="fr" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
+    <title>{% block title %}BookSync - Gérez votre collection de livres{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-{% include "navbar.html" %}
-  
-<body> {% block content %} {% endblock %} </body>
-  
-<footer>
-  <div class="auth-footer">
-    <p>
-      © 2024 BookSync - Gérez votre collection de livres
-    </p>
-  </div>
-</footer>
-  
+<body class="h-full bg-gray-50 dark:bg-gray-900">
+    <!-- Mobile menu button -->
+    <div class="md:hidden fixed top-4 left-4 z-30">
+        <button type="button" class="mobile-menu-button p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500">
+            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <div class="flex h-full">
+        <!-- Sidebar Navigation -->
+        {% include "navbar.html" %}
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 main-content">
+            <!-- Page Content -->
+            <main class="flex-1 overflow-auto">
+                {% block content %}
+                {% endblock %}
+            </main>
+            
+            <!-- Footer -->
+            <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+                        © 2024 BookSync - Gérez votre collection de livres
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarOverlay.classList.toggle('show');
+            }
+            
+            function closeSidebar() {
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
+            }
+            
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', toggleSidebar);
+            }
+            
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+            
+            // Close sidebar when clicking on a navigation link on mobile
+            const navLinks = sidebar?.querySelectorAll('a');
+            navLinks?.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 769) {
+                        closeSidebar();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
 </html>
