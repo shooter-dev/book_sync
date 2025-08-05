@@ -1,0 +1,12 @@
+{% load static %}
+
+{% block content %}
+<div>
+        <ul>
+          <li><a href="collection"><img class="h-12 w-12" src ="{% static 'images/book.png' %}"> Collection</a></li>
+          <li><a href="research"><img class="h-12 w-12" src ="{% static 'images/search.png' %}"> Recherche</a></li>
+          <li><a href="recommendation"><img class="h-12 w-12" src ="{% static 'images/robot.png' %}"> recommendation</a></li>
+        </ul>
+    </div>
+{% endblock %}
+
