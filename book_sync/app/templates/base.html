@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +8,12 @@
 
 </head>
 <body>
+    <div>
+        <ul>
+          <li><a href="collection"><img class="h-12 w-12" src ="{% static 'images/book.png' %}"> Collection</a></li>
+          <li><a href="research"><img class="h-12 w-12" src ="{% static 'images/search.png' %}"> Recherche</a></li>
+        </ul>
+    </div>
 {% block content %}
 
 {% endblock %}
