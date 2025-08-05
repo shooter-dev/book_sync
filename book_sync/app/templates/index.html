@@ -1,7 +1,125 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}Accueil - BookSync{% endblock %}
+
 {% block content %}
-    <h1 class="text-white bg-red-900 dark:text-sky-400">Hello World!</h1>
-    <p class="text-blue-600 dark:text-sky-400">Welcome to my first Django project!</p>
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Bienvenue sur BookSync
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+            Gérez votre collection de livres de manière simple et efficace
+        </p>
+    </div>
+
+    <!-- Stats rapides -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-2 mangacollec-red rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Ma Collection</p>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">0 livres</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-green-500 rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Livres lus</p>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-2 bg-blue-500 rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Favoris</p>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions rapides</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{% url 'collection' %}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-md transition-shadow group">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 mangacollec-red rounded-lg group-hover:opacity-90 transition-opacity">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white">Ma Collection</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Gérez vos livres</p>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'research' %}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-md transition-shadow group">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-blue-600 rounded-lg group-hover:opacity-90 transition-opacity">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white">Recherche</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Trouvez de nouveaux livres</p>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="{% url 'recommendation' %}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-md transition-shadow group">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-purple-600 rounded-lg group-hover:opacity-90 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-icon lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 dark:text-white">Recommandations IA</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Découvrez vos prochaines lectures</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Activité récente -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Activité récente</h2>
+        </div>
+        <div class="p-6">
+            <div class="text-center py-8">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune activité récente</h3>
+                <p class="mt-2 text-gray-500 dark:text-gray-400">Commencez par ajouter des livres à votre collection !</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

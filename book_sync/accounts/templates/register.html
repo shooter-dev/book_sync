@@ -2,16 +2,121 @@
 {% load static %}
 
 {% block content %}
-<h1> Inscription</h1>
-<form method="POST">
-  {% csrf_token %}
-  <label>
-    <input type="text" name="email" placeholder="Email">
-    <input type="password" name="mot de passe" placeholder="<mot de passe>">
-    <input type="password" name="Confirmation mot de passe" placeholder="<confirmer votre mot de passe>">
-    <input type="submit" value="Envoyer">
-  </label>
-</form>
+<div class="auth-container dark-mode">
+    <div class="auth-card space-y-8">
+        <!-- Logo/Titre principal -->
+        <div>
+            <h1 class="auth-title mangacollec-red-text">
+                BookSync
+            </h1>
+            <h2 class="auth-subtitle">
+                Inscription
+            </h2>
+            <p class="auth-description">
+                Créez votre compte pour gérer votre collection de livres
+            </p>
+        </div>
+
+        <!-- Formulaire d'inscription -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Champ nom d'utilisateur -->
+            <div class="form-group">
+                <label for="username" class="form-label">
+                    Nom d'utilisateur
+                </label>
+                <input id="username" name="username" type="text" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Choisissez un nom d'utilisateur">
+            </div>
+
+            <!-- Champ email -->
+            <div class="form-group">
+                <label for="email" class="form-label">
+                    Email
+                </label>
+                <input id="email" name="email" type="email" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Entrez votre adresse email">
+            </div>
+
+            <!-- Champ mot de passe -->
+            <div class="form-group">
+                <label for="password1" class="form-label">
+                    Mot de passe
+                </label>
+                <input id="password1" name="password1" type="password" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Créez un mot de passe sécurisé">
+            </div>
+
+            <!-- Confirmation mot de passe -->
+            <div class="form-group">
+                <label for="password2" class="form-label">
+                    Confirmation du mot de passe
+                </label>
+                <input id="password2" name="password2" type="password" required 
+                       class="mangacollec-input form-input" 
+                       placeholder="Confirmez votre mot de passe">
+            </div>
+
+            <!-- Acceptation des conditions -->
+            <div class="form-options">
+                <div class="checkbox-group">
+                    <input id="terms" name="terms" type="checkbox" required
+                           class="mangacollec-checkbox">
+                    <label for="terms" class="checkbox-label">
+                        J'accepte les <a href="#" class="mangacollec-red-text">conditions d'utilisation</a>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Messages d'erreur -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-message">
+                        <p class="error-title">
+                            {{ message }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="error-message">
+                    <h3 class="error-title">
+                        Erreur d'inscription
+                    </h3>
+                    <div class="error-list">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>• {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Bouton d'inscription -->
+            <button type="submit" class="mangacollec-red submit-button">
+                Créer mon compte
+            </button>
+        </form>
+
+        <!-- Lien connexion -->
+        <div class="signup-link">
+            <p>
+                Déjà un compte ? 
+                <a href="{% url 'login' %}" class="mangacollec-red-text">
+                    Se connecter
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 
