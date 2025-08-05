@@ -1,0 +1,322 @@
+/* BookSync Authentication Styles - Mangacollec Theme */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Couleurs principales - Light Mode */
+.mangacollec-red {
+    background-color: #CF000A;
+}
+
+.mangacollec-red:hover {
+    background-color: #B0000A;
+    opacity: 0.9;
+}
+
+.mangacollec-red-text {
+    color: #CF000A;
+}
+
+.mangacollec-red-text:hover {
+    color: #B0000A;
+}
+
+/* Styles des inputs */
+.mangacollec-input {
+    border: 1px solid #e1e5e9;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.mangacollec-input:focus {
+    border-color: #CF000A;
+    box-shadow: 0 0 0 1px #CF000A;
+    outline: none;
+}
+
+.mangacollec-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Checkbox styles */
+.mangacollec-checkbox:checked {
+    background-color: #CF000A;
+    border-color: #CF000A;
+}
+
+.mangacollec-checkbox {
+    accent-color: #CF000A;
+}
+
+/* Layout styles */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 3rem 1rem;
+}
+
+.auth-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    max-width: 28rem;
+    width: 100%;
+}
+
+.auth-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.auth-description {
+    font-size: 0.875rem;
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-label {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.forgot-password {
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-button:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.signup-link p {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.signup-link a {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.auth-footer p {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* Messages d'erreur */
+.error-message {
+    border-radius: 0.375rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #991b1b;
+    margin-bottom: 0.5rem;
+}
+
+.error-list {
+    font-size: 0.875rem;
+    color: #b91c1c;
+}
+
+.error-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-list li {
+    margin-bottom: 0.25rem;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        background-color: #000;
+        color: #e1e5e9;
+    }
+    
+    .auth-container {
+        background-color: #000;
+    }
+    
+    .auth-card {
+        background-color: #000;
+        border-color: #374151;
+    }
+    
+    .auth-subtitle {
+        color: #f9fafb;
+    }
+    
+    .auth-description {
+        color: #9ca3af;
+    }
+    
+    .form-label {
+        color: #d1d5db;
+    }
+    
+    .checkbox-label {
+        color: #d1d5db;
+    }
+    
+    .mangacollec-red {
+        background-color: #fc3117;
+    }
+    
+    .mangacollec-red:hover {
+        background-color: #e02e15;
+    }
+    
+    .mangacollec-red-text {
+        color: #fc3117;
+    }
+    
+    .mangacollec-red-text:hover {
+        color: #e02e15;
+    }
+    
+    .mangacollec-input {
+        background-color: transparent;
+        border-color: #4b5563;
+        color: #e1e5e9;
+    }
+    
+    .mangacollec-input:focus {
+        border-color: #fc3117;
+        box-shadow: 0 0 0 1px #fc3117;
+    }
+    
+    .mangacollec-input::placeholder {
+        color: #6b7280;
+    }
+    
+    .mangacollec-checkbox:checked {
+        background-color: #fc3117;
+        border-color: #fc3117;
+    }
+    
+    .error-message {
+        background-color: rgba(185, 28, 28, 0.1);
+        border-color: #991b1b;
+    }
+    
+    .error-title {
+        color: #fca5a5;
+    }
+    
+    .error-list {
+        color: #f87171;
+    }
+    
+    .signup-link p {
+        color: #9ca3af;
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .auth-container {
+        padding: 1.5rem 1rem;
+    }
+    
+    .auth-title {
+        font-size: 1.875rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 1.25rem;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
