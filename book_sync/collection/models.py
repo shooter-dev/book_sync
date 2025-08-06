@@ -38,6 +38,7 @@ class Serie(models.Model):
     title = models.CharField(max_length=255)
     adult_content = models.BooleanField(default=False)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Serie"
