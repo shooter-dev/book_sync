@@ -6,5 +6,4 @@ urlpatterns = [
     path("research", views.research, name="research"),
     path("collection", views.collection, name="collection"),
     path("recommendation", views.recommendation, name="recommendation"),
-    path("subscribe", views.subscribe, name="subscribe"),
 ]

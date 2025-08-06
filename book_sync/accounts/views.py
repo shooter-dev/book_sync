@@ -70,3 +70,6 @@ def logout_view(request):
 
 def profile_view(request):
     return render(request, 'profile.html')
+
+def subscribe(request):
+    return render(request, 'subscribe.html')

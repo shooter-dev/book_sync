@@ -12,6 +12,3 @@ def collection(request):
 
 def recommendation(request):
     return render(request, 'recommendation.html')
-
-def subscribe(request):
-    return render(request, 'subscribe.html')
