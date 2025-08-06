@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -100,3 +101,15 @@ def profile_view(request):
 @login_required(login_url='register')
 def subscribe(request):
     return render(request, 'subscribe.html')
+
+@login_required(login_url='login')
+@csrf_exempt
+def delete_user(request,pk):
+            try:
+                user= User.objects.get(pk=pk)
+                user.delete()
+                messages.info(request, "Utilisateur supprimé")
+                return redirect('index')
+            except Exception as e:
+                messages.info(request, "Erreur, Utilisateur n'a pas pu être supprimer supprimé")
+                return redirect('index')
