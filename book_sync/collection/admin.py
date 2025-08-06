@@ -12,4 +12,4 @@ admin.site.register(models.Volume)
 
 admin.site.register(models.Genre)
 
-
+admin.site.register(models.Authors)
