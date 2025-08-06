@@ -56,15 +56,16 @@ class Volume(models.Model):
     image_url = models.TextField(default='cover.png')
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
 
-
-    class Meta:
-        verbose_name = "Volume"
-        verbose_name_plural = "Volumes"
-        ordering = ['title', 'number']
-
 class Authors(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
+
+class Meta:
+    verbose_name = "Volume"
+    verbose_name_plural = "Volumes"
+    ordering = ['title', 'number']
+
+
 
         
