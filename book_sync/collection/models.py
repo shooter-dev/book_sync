@@ -44,4 +44,18 @@ class Serie(models.Model):
         verbose_name = "Serie"
         verbose_name_plural = "Series"
         ordering = ['title']
+
+class Volume(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    number = models.IntegerField(default=1)
+    release_date = models.DateField()
+    isbn = models.CharField()
+    possessions_count = models.IntegerField(default=0)
+    image_url = models.TextField(default='cover.png')
+
+    class Meta:
+        verbose_name = "Volume"
+        verbose_name_plural = "Volumes"
+        ordering = ['title', 'number']
         
