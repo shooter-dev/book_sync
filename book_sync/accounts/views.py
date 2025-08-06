@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 @never_cache
@@ -56,8 +58,31 @@ def login_view(request):
     return render(request, 'login.html', context)
 
 def register_view(request):
-    return render(request, 'register.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        email = request.POST.get('email')
+        print(username, password1, password2, email)
+        print(request.POST)
 
+        if not username or not password1 or not password2 or not email:
+            messages.error(request, "Tous les champs sont obligatoires.")
+            print("Champs manquants.")
+        elif password1 != password2:
+            messages.error(request, "Les mots de passe ne correspondent pas.")
+            print("Les mots de passe ne correspondent pas.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "Ce nom d'utilisateur est déjà pris.")
+            print("nom déja pris")
+        else:
+            User.objects.create_user(username=username, password=password1, email=email)
+            print(username, password1, email)
+            messages.success(request, "Votre compte a été créé avec succès. Vous pouvez vous connecter.")
+            print("Votre compte a été créé avec succès. Vous pouvez vous connecter.")
+            return redirect('login')
+
+    return render(request, 'register.html')
 
 def logout_view(request):
     logout(request)
