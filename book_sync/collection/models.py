@@ -24,6 +24,15 @@ class Kind(models.Model):
         verbose_name_plural = "Kinds"
         ordering = ['title']
 
+class Publisher(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Publisher"
+        verbose_name_plural = "Publishers"
+        ordering = ['title']
+
 class Serie(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
