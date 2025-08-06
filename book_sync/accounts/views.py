@@ -67,3 +67,6 @@ def logout_view(request):
 
     messages.info(request, "Vous êtes maintenant déconnecté.")
     return redirect('index')
+
+def profile_view(request):
+    return render(request, 'profile.html')

@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                Mon Profil
+            </h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Gérez vos informations personnelles et préférences
+            </p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Informations personnelles -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Informations personnelles
+                    </h3>
+                    <form method="post" action="#" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Pseudo
+                                </label>
+                                <input type="text" id="username" name="username" value="{{ user.username }}"
+                                       class="mangacollec-input form-input mt-1">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Email
+                                </label>
+                                <input type="email" id="email" name="email" value="{{ user.email }}"
+                                       class="mangacollec-input form-input mt-1">
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                Sauvegarder
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Abonnement -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Abonnement Premium
+                    </h3>
+                    {% if user.is_premium %}
+                        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4 mb-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-green-800 dark:text-green-200">
+                                        Vous êtes abonné Premium ! Profitez de toutes les fonctionnalités avancées.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
+                            Résilier l'abonnement
+                        </button>
+                    {% else %}
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4 mb-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-800 dark:text-blue-200">
+                                        Abonnez-vous Premium pour accéder aux statistiques avancées, listes de lecture et plus encore !
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                            Devenir Premium
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Préférences d'affichage -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Préférences d'affichage
+                    </h3>
+                    <form method="post" action="#" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                Thème
+                            </label>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <input id="theme-light" name="theme" type="radio" value="light" 
+                                           class="mangacollec-checkbox">
+                                    <label for="theme-light" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                        🌞 Thème clair
+                                    </label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="theme-dark" name="theme" type="radio" value="dark" 
+                                           class="mangacollec-checkbox">
+                                    <label for="theme-dark" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                        🌙 Thème sombre
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                Sauvegarder les préférences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contenu mature -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Affichage des couvertures
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                🔞 Voir les couvertures explicites
+                            </label>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                                Afficher les couvertures de livres avec contenu mature/explicite (réservé aux adultes)
+                            </p>
+                            
+                            <div class="relative inline-block">
+                                <button type="button" id="mature-content-button" 
+                                        class="flex items-center justify-between w-48 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <span id="mature-content-text">Non</span>
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                
+                                <div id="mature-content-dropdown" class="absolute z-10 w-48 mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg hidden">
+                                    <div class="py-1">
+                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="non">
+                                            Non
+                                        </button>
+                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="oui">
+                                            Oui
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Préférences de contenu -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Préférences de contenu
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Sélectionnez les types de contenu que vous ne souhaitez pas voir :
+                    </p>
+                    <form method="post" action="#" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="violence" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Violence
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="horreur" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Horreur
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="ecchi" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Ecchi
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="yaoi" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Yaoi
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="yuri" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Yuri
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="drame" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Drame
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="mecha" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Mecha
+                                </span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
+                                <input type="checkbox" name="exclude_tags" value="sport" class="sr-only peer">
+                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
+                                    #Sport
+                                </span>
+                            </label>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                Sauvegarder les préférences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Questions fréquemment posées (FAQ)
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                            <button class="flex justify-between items-center w-full text-left" type="button">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                    Comment ajouter un livre à ma collection ?
+                                </span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                Utilisez la barre de recherche pour trouver votre livre, puis cliquez sur "Ajouter à ma collection".
+                            </div>
+                        </div>
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                            <button class="flex justify-between items-center w-full text-left" type="button">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                    Quels sont les avantages de l'abonnement Premium ?
+                                </span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                L'abonnement Premium vous donne accès aux statistiques avancées, listes de lecture illimitées, et fonctionnalités exclusives.
+                            </div>
+                        </div>
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                            <button class="flex justify-between items-center w-full text-left" type="button">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                    Comment modifier mes préférences de contenu ?
+                                </span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                Dans la section "Préférences de contenu" ci-dessus, sélectionnez les tags que vous souhaitez exclure de vos recommandations.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone de danger -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg border-l-4 border-red-500">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-red-600 dark:text-red-400 mb-4">
+                        Zone de danger
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        ⚠️ Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+                    </p>
+                    <form method="post" action="#" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
+                            Supprimer définitivement mon compte
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const matureContentButton = document.getElementById('mature-content-button');
+    const matureContentDropdown = document.getElementById('mature-content-dropdown');
+    const matureContentText = document.getElementById('mature-content-text');
+    const matureOptions = document.querySelectorAll('.mature-option');
+    
+    // Toggle dropdown
+    matureContentButton.addEventListener('click', function() {
+        matureContentDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!matureContentButton.contains(event.target) && !matureContentDropdown.contains(event.target)) {
+            matureContentDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Handle option selection
+    matureOptions.forEach(function(option) {
+        option.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            
+            if (value === 'oui') {
+                // Confirmation d'âge
+                const ageConfirmation = confirm(
+                    "⚠️ CONFIRMATION D'ÂGE REQUISE ⚠️\n\n" +
+                    "En cliquant sur 'OK', vous confirmez :\n" +
+                    "• Avoir 18 ans ou plus\n" +
+                    "• Souhaiter voir les couvertures de livres explicites\n" +
+                    "• Comprendre que certaines couvertures peuvent contenir du contenu mature\n\n" +
+                    "Confirmez-vous avoir 18 ans ou plus ?"
+                );
+                
+                if (ageConfirmation) {
+                    matureContentText.textContent = 'Oui';
+                    // Ici vous pouvez ajouter le code pour sauvegarder la préférence
+                    console.log('Couvertures explicites activées');
+                } else {
+                    return; // Ne pas changer la sélection
+                }
+            } else {
+                matureContentText.textContent = 'Non';
+                // Ici vous pouvez ajouter le code pour sauvegarder la préférence
+                console.log('Couvertures explicites désactivées');
+            }
+            
+            matureContentDropdown.classList.add('hidden');
+        });
+    });
+});
+</script>
+
+{% endblock %}
