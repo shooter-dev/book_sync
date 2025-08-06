@@ -335,7 +335,7 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         ⚠️ Cette action est irréversible. Toutes vos données seront définitivement supprimées.
                     </p>
-                    <form method="post" action="#" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+                    <form method="POST" action="{% url 'delete_user' user.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
                         {% csrf_token %}
                         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
                             Supprimer définitivement mon compte
