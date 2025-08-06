@@ -53,6 +53,8 @@ class Volume(models.Model):
     isbn = models.CharField()
     possessions_count = models.IntegerField(default=0)
     image_url = models.TextField(default='cover.png')
+    serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
+
 
     class Meta:
         verbose_name = "Volume"
