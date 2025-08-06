@@ -1,0 +1,16 @@
+{% load static %}
+{% if messages %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+<div>
+  <h2>Supression utilisateur</h2>
+  <p>Vous avez été supprimer de la base de donnée avec succès.</p>
+
+  <a href="{% url 'index' %}">
+    Revenir à la page d'accueil'
+  </a>
+</div>
+·
