@@ -4,10 +4,11 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 
 @never_cache
 @csrf_protect
@@ -100,3 +101,37 @@ def profile_view(request):
 @login_required(login_url='register')
 def subscribe(request):
     return render(request, 'subscribe.html')
+
+@login_required
+def change_password_view(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+
+        if not request.user.check_password(old_password):
+            messages.error(request, 'Le mot de passe actuel est incorrect.')
+            return redirect('login')
+
+        if new_password1 != new_password2:
+            messages.error(request, 'Les nouveaux mots de passe ne correspondent pas.')
+            return redirect('login')
+
+        form = PasswordChangeForm(request.user, {
+            'old_password': old_password,
+            'new_password1': new_password1,
+            'new_password2': new_password2
+        })
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Votre mot de passe a été changé avec succès.')
+            return redirect('login')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Erreur: {error}')
+            return redirect('login')
+
+    return redirect('index')

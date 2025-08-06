@@ -8,4 +8,5 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("profile/", views.profile_view, name="profile"),
     path("subscribe/", views.subscribe, name="subscribe"),
+    path('changer-mdp/', views.change_password_view, name='change_password'),
 ]
