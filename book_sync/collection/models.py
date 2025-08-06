@@ -37,6 +37,7 @@ class Serie(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     adult_content = models.BooleanField(default=False)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Serie"
