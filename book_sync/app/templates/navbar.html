@@ -62,7 +62,7 @@
     <!-- User Section -->
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         {% if user.is_authenticated %}
-            <div class="flex items-center space-x-3 mb-3">
+            <a href="{% url 'profile' %}" class="flex items-center space-x-3 mb-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -73,10 +73,10 @@
                         {{ user.username }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                        Utilisateur
+                        Voir le profil
                     </p>
                 </div>
-            </div>
+            </a>
             <a href="{% url 'logout' %}" 
                class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white mangacollec-red rounded-lg hover:opacity-90 transition-opacity">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
