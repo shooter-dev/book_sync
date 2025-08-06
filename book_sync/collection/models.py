@@ -61,4 +61,10 @@ class Volume(models.Model):
         verbose_name = "Volume"
         verbose_name_plural = "Volumes"
         ordering = ['title', 'number']
+
+class Authors(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+
         
