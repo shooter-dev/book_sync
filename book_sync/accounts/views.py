@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_protect
@@ -91,3 +93,10 @@ def logout_view(request):
 
     messages.info(request, "Vous êtes maintenant déconnecté.")
     return redirect('index')
+
+def profile_view(request):
+    return render(request, 'profile.html')
+
+@login_required(login_url='register')
+def subscribe(request):
+    return render(request, 'subscribe.html')
