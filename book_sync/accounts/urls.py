@@ -8,4 +8,6 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("profile/", views.profile_view, name="profile"),
     path("subscribe/", views.subscribe, name="subscribe"),
+    path('changer-mdp/', views.change_password_view, name='change_password'),
+    path(r'^delete_user/(?P<pk>\d+)/$', views.delete_user, name="delete_user"),
 ]

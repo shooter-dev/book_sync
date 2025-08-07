@@ -56,7 +56,7 @@ class Volume(models.Model):
     possessions_count = models.IntegerField(default=0)
     image_url = models.TextField(default='cover.png')
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return f"{self.serie.title} - Tome {self.number}: {self.title}"
 
@@ -64,6 +64,17 @@ class Volume(models.Model):
         verbose_name = "Volume"
         verbose_name_plural = "Volumes"
         ordering = ['serie__title', 'number']
+
+class Authors(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Author"
+        verbose_name_plural = "Authors"
+        ordering = ['name']
+
 
 
 class Possession(models.Model):
@@ -80,3 +91,4 @@ class Possession(models.Model):
         verbose_name_plural = "Possessions"
         unique_together = ('user', 'volume')
         ordering = ['-ajouter_le']
+        

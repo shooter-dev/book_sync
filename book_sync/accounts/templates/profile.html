@@ -47,6 +47,37 @@
                     </form>
                 </div>
             </div>
+                <!-- Changement de mot de passe -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Modification de mot de passe
+                    </h3>
+                    <form method="post" action="{% url 'change_password' %}" class="space-y-4">
+                        {% csrf_token %}
+                        <h2 class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Ancien mot de passe
+                        </h2>
+                        <input name="old_password" type="password" autocomplete="old_password" class="mangacollec-input form-input mt-1">
+                        <h2 class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Nouveau mot de passe
+                        </h2>
+                        <input name="new_password1" type="password" autocomplete="new-password"
+                               class="mangacollec-input form-input mt-1">
+                        <h2 class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                             Confirmer le mot de passe
+                        </h2>
+                        <input name="new_password2" type="password" autocomplete="new-password" class="mangacollec-input form-input mt-1">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                Sauvegarder
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Abonnement -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
@@ -304,7 +335,7 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         ⚠️ Cette action est irréversible. Toutes vos données seront définitivement supprimées.
                     </p>
-                    <form method="post" action="#" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+                    <form method="POST" action="{% url 'delete_user' user.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
                         {% csrf_token %}
                         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
                             Supprimer définitivement mon compte
