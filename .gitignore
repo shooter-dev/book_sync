@@ -70,3 +70,8 @@ coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
+
+# IA
+.claude/
+CLAUDE.md
+.cursor
