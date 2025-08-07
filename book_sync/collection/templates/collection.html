@@ -26,7 +26,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total livres</p>
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ total_books }}</p>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lus</p>
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ lus }}</p>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">En cours</p>
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ en_cours }}</p>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Favoris</p>
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">0</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ favoris }}</p>
                     </div>
                 </div>
             </div>
@@ -96,16 +96,53 @@
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Mes Livres</h2>
             </div>
             <div class="p-6">
-                <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                    </svg>
-                    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucun livre dans votre collection</h3>
-                    <p class="mt-2 text-gray-500 dark:text-gray-400">Commencez par ajouter votre premier livre !</p>
-                    <button class="mt-4 mangacollec-red text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
-                        Ajouter un livre
-                    </button>
-                </div>
+                {% if possessions %}
+                    <!-- Liste des livres de l'utilisateur -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {% for possession in possessions %}
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                <div class="flex items-center space-x-4">
+                                    <!-- Image du livre ou placeholder -->
+                                    <div class="w-16 h-20 bg-gray-300 dark:bg-gray-600 rounded-md flex items-center justify-center">
+                                        {% if possession.volume.image_url and possession.volume.image_url != 'cover.png' %}
+                                            <img src="{{ possession.volume.image_url }}" alt="{{ possession.volume.title }}" 
+                                                 class="w-full h-full object-cover rounded-md">
+                                        {% else %}
+                                            <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Informations du livre -->
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">{{ possession.volume.serie.title }}</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                                            Tome {{ possession.volume.number }}: {{ possession.volume.title }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500">
+                                            {{ possession.volume.serie.genre.title }}
+                                        </p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                            Ajouté le {{ possession.ajouter_le|date:"d/m/Y" }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucun livre dans votre collection</h3>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">Commencez par ajouter votre premier livre !</p>
+                        <a href="{% url 'mes_livres' %}" class="mt-4 inline-block mangacollec-red text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                            Ajouter un livre
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 </div>
