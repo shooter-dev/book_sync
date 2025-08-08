@@ -1,18 +1,7 @@
-#from ftplib import print_line
-
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, TemplateView
-from collection.models import Serie
-
-
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import JsonResponse
 from .models import Possession, Volume, Serie, Genre, Publisher
-from django.db.models import Q
 
 
 @login_required
