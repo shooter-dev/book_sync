@@ -18,14 +18,14 @@
         <!-- Barre de recherche -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
             <div class="p-6">
-                <form class="space-y-4">
+                <form class="space-y-4" method="GET">
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex-1">
-                            <label for="search-a" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Rechercher un livre
                             </label>
                             <div class="relative">
-                                <input type="text" id="search-a" name="search-a"
+                                <input type="text" id="search" name="search"
                                        class="mangacollec-input form-input w-full pl-10" 
                                        placeholder="Titre, auteur, édition...">
                                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,28 +78,58 @@
                 </form>
             </div>
         </div>
-
+{% if search is not Null %}
+{% for message in messages %}
+{% include "result_research.html" %}
+{% endfor %}
+{% elif entry.category == 'Executive Committee Member' %}
+<p class="mt-2 text-gray-500 dark:text-gray-400">Utilisez la barre de recherche ci-dessus pour trouver des livres</p>
+{% endif %}
         <!-- Résultats de recherche -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Résultats de recherche</h2>
             </div>
             <div class="p-6">
-                <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Lancez une recherche</h3>
-                               {% if search is not Null %}
-                                    {% for message in messages %}
-                                        {% include "result_research.html" %}
-                                    {% endfor %}
-                                 {% elif entry.category == 'Executive Committee Member' %}
-                                     <p class="mt-2 text-gray-500 dark:text-gray-400">Utilisez la barre de recherche ci-dessus pour trouver des livres</p>
-                                {% endif %}
-
-
-                </div>
+                {% if series %}
+                    <div class="space-y-4">
+                        {% for serie in series %}
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">{{ serie.title }}</h4>
+                                        <div class="flex items-center space-x-4 mt-1">
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ serie.genre.title }}</span>
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ serie.publisher.title }}</span>
+                                        </div>
+                                    </div>
+                                    <button class="mangacollec-red text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+                                        Voir les volumes
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% if search_term %}
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucun résultat trouvé</h3>
+                            <p class="mt-2 text-gray-500 dark:text-gray-400">Essayez avec d'autres mots-clés</p>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Lancez une recherche</h3>
+                            <p class="mt-2 text-gray-500 dark:text-gray-400">Utilisez la barre de recherche ci-dessus pour trouver des séries</p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
             </div>
         </div>
 

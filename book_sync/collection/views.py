@@ -8,10 +8,18 @@ from collection.models import Serie
 
 @csrf_exempt
 def search(request):
-    print(request)
-    # object_list = Serie.objects.filter(title__icontains=search)
-    context={}
-    return render(request, 'search.html')
+    series = []
+    search_term = ""
+
+    if request.method == "GET" and request.GET.get('search'):
+        search_term = request.GET.get('search')
+        series = Serie.objects.filter(title__icontains=search_term)#.select_related('genre', 'publisher')
+
+    context = {
+        'series': series,
+        'search_term': search_term,
+    }
+    return render(request, 'search.html', context)
 
 # class ResultPageView(TemplateView):
 #     template_name = 'result.html'
