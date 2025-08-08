@@ -1,6 +1,16 @@
-# Python
-__pycache__/
+# Django
+*.log
+*.pot
 *.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media/
+
+# Migrations
+book_sync/*/migrations/[0-9]*.py
+
+# Python
 *.py[cod]
 *$py.class
 *.so
@@ -61,18 +71,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 
-#bdd
-*.db
-*.sqlite3
-
-#ia
-.cursor/
+# IA
 .claude/
 CLAUDE.md
-.mcp.json
-
-# dist
-dist/
-
-# mac
-*.DS_Store
+.cursor
