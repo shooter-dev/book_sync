@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Possession, Volume, Serie, Genre, Publisher
 
@@ -51,17 +51,35 @@ def search(request):
     }
     return render(request, 'search.html', context)
 
-# class ResultPageView(TemplateView):
-#     template_name = 'result.html'
+@login_required
+def serie_detail(request, serie_id):
+    """Vue pour afficher les détails d'une série"""
 
-# class SearchResultsView(ListView):
-#     model = Serie
-#     template_name = "result_research.html"
-#
-#     def get_queryset(request,self):
-#         if request.method == "POST":
-#             search = request.POST["search"]
-#             print("****************************************************")
-#             print(Serie.objects.filter(title__icontains=search))
-#             object_list =Serie.objects.filter(title__icontains=search)
-#           return object_list
+    serie = get_object_or_404(Serie, id=serie_id)
+    
+    volumes = Volume.objects.filter(serie=serie).order_by('number')
+    
+    user_possessions = Possession.objects.filter(
+        user=request.user, 
+        volume__serie=serie
+    ).select_related('volume')
+    
+    possessed_volume_ids = {possession.volume.id for possession in user_possessions}
+    
+    for volume in volumes:
+        volume.possessed = volume.id in possessed_volume_ids
+    
+    total_volumes = volumes.count()
+    possessed_volumes = len(possessed_volume_ids)
+    completion_percentage = (possessed_volumes / total_volumes * 100) if total_volumes > 0 else 0
+    
+    context = {
+        'serie': serie,
+        'volumes': volumes,
+        'total_volumes': total_volumes,
+        'possessed_volumes': possessed_volumes,
+        'completion_percentage': completion_percentage,
+        'user_possessions': user_possessions,
+    }
+    
+    return render(request, 'serie_detail.html', context)
