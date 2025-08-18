@@ -51,7 +51,7 @@ def search(request):
     }
     return render(request, 'search.html', context)
 
-@login_required
+
 def serie_detail(request, serie_id):
     """Vue pour afficher les détails d'une série"""
 
@@ -84,7 +84,7 @@ def serie_detail(request, serie_id):
     
     return render(request, 'serie_detail.html', context)
 
-@login_required
+
 def volume_detail(request, volume_id):
     """Vue pour afficher les détails d'un volume"""
 
