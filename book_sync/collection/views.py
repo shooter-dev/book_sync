@@ -83,3 +83,56 @@ def serie_detail(request, serie_id):
     }
     
     return render(request, 'serie_detail.html', context)
+
+@login_required
+def volume_detail(request, volume_id):
+    """Vue pour afficher les détails d'un volume"""
+
+    volume = get_object_or_404(Volume, id=volume_id)
+    
+    user_possession = None
+    try:
+        user_possession = Possession.objects.get(user=request.user, volume=volume)
+    except Possession.DoesNotExist:
+        pass
+    
+    serie_volumes = Volume.objects.filter(serie=volume.serie).order_by('number')
+    
+    user_serie_possessions = Possession.objects.filter(
+        user=request.user, 
+        volume__serie=volume.serie
+    ).select_related('volume')
+    
+    possessed_volume_ids = {possession.volume.id for possession in user_serie_possessions}
+    
+    for vol in serie_volumes:
+        vol.possessed = vol.id in possessed_volume_ids
+    
+    previous_volume = None
+    next_volume = None
+    
+    for i, vol in enumerate(serie_volumes):
+        if vol.id == volume.id:
+            if i > 0:
+                previous_volume = serie_volumes[i - 1]
+            if i < len(serie_volumes) - 1:
+                next_volume = serie_volumes[i + 1]
+            break
+    
+    total_volumes = serie_volumes.count()
+    possessed_volumes = len(possessed_volume_ids)
+    completion_percentage = (possessed_volumes / total_volumes * 100) if total_volumes > 0 else 0
+    
+    context = {
+        'volume': volume,
+        'user_possession': user_possession,
+        'serie_volumes': serie_volumes,
+        'possessed_volume_ids': possessed_volume_ids,
+        'previous_volume': previous_volume,
+        'next_volume': next_volume,
+        'total_volumes': total_volumes,
+        'possessed_volumes': possessed_volumes,
+        'completion_percentage': completion_percentage,
+    }
+    
+    return render(request, 'volume_detail.html', context)
