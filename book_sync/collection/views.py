@@ -54,25 +54,21 @@ def search(request):
 @login_required
 def serie_detail(request, serie_id):
     """Vue pour afficher les détails d'une série"""
+
     serie = get_object_or_404(Serie, id=serie_id)
     
-    # Récupérer tous les volumes de la série
     volumes = Volume.objects.filter(serie=serie).order_by('number')
     
-    # Récupérer les possessions de l'utilisateur pour cette série
     user_possessions = Possession.objects.filter(
         user=request.user, 
         volume__serie=serie
     ).select_related('volume')
     
-    # Créer un set des IDs des volumes possédés pour un accès rapide
     possessed_volume_ids = {possession.volume.id for possession in user_possessions}
     
-    # Ajouter une propriété 'possessed' à chaque volume
     for volume in volumes:
         volume.possessed = volume.id in possessed_volume_ids
     
-    # Statistiques de la série
     total_volumes = volumes.count()
     possessed_volumes = len(possessed_volume_ids)
     completion_percentage = (possessed_volumes / total_volumes * 100) if total_volumes > 0 else 0
