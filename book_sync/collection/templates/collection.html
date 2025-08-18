@@ -72,20 +72,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-2 bg-blue-500 rounded-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Favoris</p>
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ favoris }}</p>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Actions -->
@@ -112,8 +98,10 @@
                         <!-- En-tête de la série -->
                         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ serie.title }}</h3>
+                                <div class="flex-1">
+                                    <a href="{% url 'serie_detail' serie.id %}" class="group">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:mangacollec-red-text transition-colors">{{ serie.title }}</h3>
+                                    </a>
                                     <div class="flex items-center space-x-4 mt-1">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
                                             {{ serie.genre.title }}
@@ -122,11 +110,16 @@
                                         <span class="text-sm text-gray-500 dark:text-gray-400">{{ volumes|length }} tome{{ volumes|length|pluralize }}</span>
                                     </div>
                                 </div>
-                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
+                                <div class="flex items-center space-x-2">
+                                    <a href="{% url 'serie_detail' serie.id %}" class="mangacollec-red text-white px-3 py-1 rounded text-sm hover:opacity-90 transition-opacity">
+                                        Voir série
+                                    </a>
+                                    <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
@@ -193,4 +186,41 @@
             {% endif %}
         </div>
 </div>
+
+<style>
+/* Styles personnalisés pour MangaCollec */
+.mangacollec-red {
+    background-color: #CF000A;
+}
+
+.mangacollec-red:hover {
+    background-color: #B0000A;
+}
+
+.mangacollec-red-text {
+    color: #CF000A;
+}
+
+.group:hover .group-hover\:mangacollec-red-text {
+    color: #CF000A;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mangacollec-red {
+        background-color: #fc3117;
+    }
+    
+    .mangacollec-red:hover {
+        background-color: #e02e15;
+    }
+    
+    .mangacollec-red-text {
+        color: #fc3117;
+    }
+    
+    .group:hover .group-hover\:mangacollec-red-text {
+        color: #fc3117;
+    }
+}
+</style>
 {% endblock %}
