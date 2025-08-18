@@ -1,7 +1,13 @@
+from datetime import datetime
+from pyexpat.errors import messages
+
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Possession, Volume, Serie, Genre, Publisher
+from django.contrib import messages
+
+from .services import VolumeService, CollectionService
 
 
 @login_required
@@ -136,3 +142,23 @@ def volume_detail(request, volume_id):
     }
     
     return render(request, 'volume_detail.html', context)
+
+@login_required
+def add_collection(request, volume_id):
+
+
+    volume = get_object_or_404(Volume, id=volume_id)
+
+    possession_exists = Possession.objects.filter(user=request.user, volume=volume).exists()
+
+    if not possession_exists:
+        Possession.objects.create(
+            user_id=request.user.id,
+            volume_id=volume.id,
+            ajouter_le=datetime.now()
+        )
+
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+
