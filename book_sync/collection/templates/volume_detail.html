@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ volume.title }} - Tome {{ volume.number }} - BookSync{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+            <li>
+                <a href="{% url 'collection' %}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    Collection
+                </a>
+            </li>
+            <li>
+                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li>
+                <a href="{% url 'serie_detail' volume.serie.id %}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    {{ volume.serie.title }}
+                </a>
+            </li>
+            <li>
+                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li class="text-gray-900 dark:text-white font-medium">Tome {{ volume.number }}</li>
+        </ol>
+    </nav>
+
+    <!-- Navigation entre volumes -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            {% if previous_volume %}
+                <a href="{% url 'volume_detail' previous_volume.id %}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Tome {{ previous_volume.number }}
+                </a>
+            {% else %}
+                <div class="inline-flex items-center px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-400 dark:text-gray-600">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Premier tome
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center">
+            <div class="text-sm text-gray-500 dark:text-gray-400">Volume {{ volume.number }} sur {{ total_volumes }}</div>
+        </div>
+        
+        <div>
+            {% if next_volume %}
+                <a href="{% url 'volume_detail' next_volume.id %}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    Tome {{ next_volume.number }}
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            {% else %}
+                <div class="inline-flex items-center px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-400 dark:text-gray-600">
+                    Dernier tome
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Image et actions (colonne gauche) -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <!-- Image du volume -->
+                <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden mb-4">
+                    {% if volume.image_url and volume.image_url != 'cover.png' %}
+                        <img src="{{ volume.image_url }}" 
+                             alt="Tome {{ volume.number }}: {{ volume.title }}" 
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-gray-400 dark:text-gray-500 mb-2">{{ volume.number }}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Aucune image</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Statut de possession -->
+                <div class="mb-4">
+                    {% if user_possession %}
+                        <div class="flex items-center justify-center p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-green-800 dark:text-green-200 font-medium">Dans votre collection</span>
+                        </div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
+                            Ajouté le {{ user_possession.ajouter_le|date:"d/m/Y à H:i" }}
+                        </div>
+                    {% else %}
+                        <div class="flex items-center justify-center p-3 bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-700 rounded-lg">
+                            <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400 font-medium">Non possédé</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-3">
+                    {% if user_possession %}
+                        <button class="w-full bg-red-500 text-white px-4 py-3 rounded-lg font-medium hover:bg-red-600 transition-colors flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            <span>Retirer de la collection</span>
+                        </button>
+                    {% else %}
+                        <button class="w-full mangacollec-red text-white px-4 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <span>Ajouter à ma collection</span>
+                        </button>
+                    {% endif %}
+                    
+                    <button class="w-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-3 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        <span>Ajouter aux favoris</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations détaillées (colonne droite) -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <!-- En-tête -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-6 mb-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ volume.title }}</h1>
+                            <div class="flex items-center space-x-4 mb-4">
+                                <span class="text-lg font-semibold mangacollec-red-text">Tome {{ volume.number }}</span>
+                                <span class="text-gray-500 dark:text-gray-400">•</span>
+                                <a href="{% url 'serie_detail' volume.serie.id %}" class="text-gray-600 dark:text-gray-400 hover:mangacollec-red-text transition-colors">
+                                    {{ volume.serie.title }}
+                                </a>
+                            </div>
+                            
+                            <!-- Métadonnées -->
+                            <div class="flex flex-wrap items-center gap-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mangacollec-red text-white">
+                                    {{ volume.serie.genre.title }}
+                                </span>
+                                <span class="text-gray-600 dark:text-gray-400">
+                                    <strong>Éditeur:</strong> {{ volume.serie.publisher.title }}
+                                </span>
+                                {% if volume.serie.kinds.exists %}
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for kind in volume.serie.kinds.all %}
+                                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                                {{ kind.title }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informations détaillées -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informations</h3>
+                        <dl class="space-y-3">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de sortie</dt>
+                                <dd class="text-sm text-gray-900 dark:text-white">{{ volume.release_date|date:"d F Y" }}</dd>
+                            </div>
+                            {% if volume.isbn %}
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ISBN</dt>
+                                    <dd class="text-sm text-gray-900 dark:text-white font-mono">{{ volume.isbn }}</dd>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Possessions totales</dt>
+                                <dd class="text-sm text-gray-900 dark:text-white">{{ volume.possessions_count }} utilisateur{{ volume.possessions_count|pluralize }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Progression de la série</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                    <span>Votre progression</span>
+                                    <span>{{ possessed_volumes }}/{{ total_volumes }}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="mangacollec-red h-2 rounded-full transition-all duration-300" style="width: {{ completion_percentage }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                    <div class="text-lg font-bold mangacollec-red-text">{{ possessed_volumes }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Possédés</div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                    <div class="text-lg font-bold text-gray-600 dark:text-gray-400">{{ total_volumes|add:"-"|add:possessed_volumes }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Manquants</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Autres volumes de la série -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Autres volumes de la série</h3>
+                        <a href="{% url 'serie_detail' volume.serie.id %}" class="text-sm mangacollec-red-text hover:underline">
+                            Voir tous les volumes
+                        </a>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                        {% for vol in serie_volumes %}
+                            {% if vol.id != volume.id %}
+                                <a href="{% url 'volume_detail' vol.id %}" class="group relative">
+                                    <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden {% if not vol.possessed %}opacity-60{% endif %}">
+                                        {% if vol.image_url and vol.image_url != 'cover.png' %}
+                                            <img src="{{ vol.image_url }}" 
+                                                 alt="Tome {{ vol.number }}" 
+                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                        {% else %}
+                                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                                                <div class="text-lg font-bold text-gray-400 dark:text-gray-500">{{ vol.number }}</div>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <!-- Badge de statut -->
+                                        {% if vol.possessed %}
+                                            <div class="absolute top-1 right-1">
+                                                <div class="bg-green-500 text-white rounded-full p-0.5">
+                                                    <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-xs text-center mt-1 text-gray-600 dark:text-gray-400 group-hover:mangacollec-red-text transition-colors">
+                                        Tome {{ vol.number }}
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Styles personnalisés pour MangaCollec */
+.mangacollec-red {
+    background-color: #CF000A;
+}
+
+.mangacollec-red:hover {
+    background-color: #B0000A;
+}
+
+.mangacollec-red-text {
+    color: #CF000A;
+}
+
+.hover\:mangacollec-red-text:hover {
+    color: #CF000A;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mangacollec-red {
+        background-color: #fc3117;
+    }
+    
+    .mangacollec-red:hover {
+        background-color: #e02e15;
+    }
+    
+    .mangacollec-red-text {
+        color: #fc3117;
+    }
+    
+    .hover\:mangacollec-red-text:hover {
+        color: #fc3117;
+    }
+}
+</style>
+{% endblock %}
