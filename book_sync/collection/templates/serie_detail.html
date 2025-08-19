@@ -113,26 +113,14 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
         {% if volumes %}
             <div class="p-6">
-                <button class="mangacollec-red text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        <span>tout selectionner</span>
-                </button>
-                <button class="mangacollec-red text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        <span>tout déselectionner</span>
-                </button>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
                     {% for volume in volumes %}
                         <div class="group cursor-pointer relative">
                             <!-- Badge de statut -->
                             {% if volume.possessed %}
                                 <div class="absolute top-2 right-2 z-10">
-                                    <div class="bg-green-500 text-white rounded-full p-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="bg-green-500 text-white rounded-full p-1 ">
+                                        <svg class="w-3 h-3 toggle_checked" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
@@ -140,7 +128,7 @@
                             {% else %}
                                 <div class="absolute top-2 right-2 z-10">
                                     <div class="bg-gray-400 text-white rounded-full p-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-3 h-3 toggle_uncheck" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                         </svg>
                                     </div>
@@ -165,17 +153,21 @@
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                                     <div class="flex space-x-2">
                                         {% if volume.possessed %}
-                                            <button class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition-colors" title="Retirer de la collection">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
+                                            <a href="{% url 'delete_volume_collection' volume.id %}" >
+                                                <button class="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition-colors" title="Retirer de la collection">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </a>
                                         {% else %}
-                                            <button class="mangacollec-red text-white p-2 rounded-full shadow-lg hover:opacity-90 transition-opacity" title="Ajouter à la collection">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                </svg>
-                                            </button>
+                                            <a href="{% url 'add_collection' volume.id %}" >
+                                                <button class="mangacollec-red text-white p-2 rounded-full shadow-lg hover:opacity-90 transition-opacity" title="Ajouter à la collection">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                    </svg>
+                                                </button>
+                                            </a>
                                         {% endif %}
                                         <a href="{% url 'volume_detail' volume.id %}" class="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors" title="Voir détails">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
