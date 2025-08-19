@@ -1,3 +1,5 @@
 django
 psycopg2-binary
 python-dotenv
+
+git+https://github.com/shooter-dev/mangacollec_lib.git
