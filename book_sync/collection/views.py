@@ -145,10 +145,7 @@ def volume_detail(request, volume_id):
 
 @login_required
 def add_collection(request, volume_id):
-
-
     volume = get_object_or_404(Volume, id=volume_id)
-
     possession_exists = Possession.objects.filter(user=request.user, volume=volume).exists()
 
     if not possession_exists:
@@ -160,5 +157,13 @@ def add_collection(request, volume_id):
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
+@login_required
+def delete_volume_collection(request, volume_id):
+    volume = get_object_or_404(Volume, id=volume_id)
+    possession_exists = Possession.objects.filter(user=request.user, volume=volume).exists()
 
+    if possession_exists:
+        Possession.objects.filter(user=request.user, volume=volume).delete()
 
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+    print("Referer:", referer)
