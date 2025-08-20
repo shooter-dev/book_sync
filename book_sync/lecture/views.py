@@ -1,13 +1,22 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Q
-from collection.models import Possession
+from django.contrib import messages
+from django.http import HttpResponseForbidden
+from collection.models import Possession, Volume
 from .models import Read
 
 
+def is_premium(user):
+    """Vérifie si l'utilisateur fait partie du groupe premium"""
+    return user.groups.filter(name='premium').exists()
+
+
 @login_required
+@user_passes_test(is_premium, login_url='/accounts/subscribe/')
 def lecture(request):
-    user = request.user
+    user: User = request.user
     
     # Livres terminés de la collection (possédés ET lus)
     collection_read = Read.objects.filter(
@@ -55,3 +64,47 @@ def lecture(request):
     }
     
     return render(request, 'lecture.html', context)
+
+
+@login_required
+@user_passes_test(is_premium, login_url='/accounts/subscribe/')
+def add_read(request, volume_id):
+    """Marque un volume comme lu par l'utilisateur connecté"""
+    if request.method != 'POST':
+        return redirect('lecture')
+    
+    volume = get_object_or_404(Volume, id=volume_id)
+    user = request.user
+    
+    # Vérifier si le volume n'est pas déjà marqué comme lu
+    read_entry, created = Read.objects.get_or_create(
+        user=user,
+        volume=volume
+    )
+    
+    if created:
+        messages.success(request, f'"{volume.serie.title} - Tome {volume.number}" a été marqué comme lu.')
+    else:
+        messages.info(request, f'"{volume.serie.title} - Tome {volume.number}" était déjà marqué comme lu.')
+    
+    return redirect('lecture')
+
+
+@login_required
+@user_passes_test(is_premium, login_url='/accounts/subscribe/')
+def remove_read(request, volume_id):
+    """Supprime une lecture d'un volume pour l'utilisateur connecté"""
+    if request.method != 'POST':
+        return redirect('lecture')
+    
+    volume = get_object_or_404(Volume, id=volume_id)
+    user = request.user
+    
+    try:
+        read_entry = Read.objects.get(user=user, volume=volume)
+        read_entry.delete()
+        messages.success(request, f'La lecture de "{volume.serie.title} - Tome {volume.number}" a été supprimée.')
+    except Read.DoesNotExist:
+        messages.error(request, f'Cette lecture n\'existe pas.')
+    
+    return redirect('lecture')
