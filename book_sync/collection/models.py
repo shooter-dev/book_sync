@@ -146,7 +146,7 @@ class Possession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='possessions')
     volume = models.ForeignKey(Volume, on_delete=models.PROTECT, related_name='user_possessions')
-    ajouter_le = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} possède {self.volume}"
@@ -155,4 +155,4 @@ class Possession(models.Model):
         verbose_name = "Possession"
         verbose_name_plural = "Possessions"
         unique_together = ('user', 'volume')
-        ordering = ['-ajouter_le']
+        ordering = ['-created_at']
