@@ -167,3 +167,18 @@ def delete_volume_collection(request, volume_id):
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
     print("Referer:", referer)
+
+@login_required
+def popup_search(request):
+    series = []
+    search_term = ""
+
+    if request.method == "GET" and request.GET.get('search'):
+        search_term = request.GET.get('search')
+        series = Serie.objects.filter(title__icontains=search_term)#.select_related('genre', 'publisher')
+
+    context = {
+        'series': series,
+        'search_term': search_term,
+    }
+    return render(request, 'popup_search.html', context)
