@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 import uuid
 
 class Authors(models.Model):
@@ -102,7 +102,7 @@ class Volume(models.Model):
     release_date = models.DateField(null=True, blank=True)
     isbn = models.CharField(null=True, blank=True)
     possessions_count = models.IntegerField(default=0)
-    image_url = models.TextField(default='cover.png')
+    image_url = models.TextField(default='cover.png', null=True, blank=True)
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -144,7 +144,7 @@ class Tasks(models.Model):
 
 class Possession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='possessions')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='possessions')
     volume = models.ForeignKey(Volume, on_delete=models.PROTECT, related_name='user_possessions')
     ajouter_le = models.DateTimeField(auto_now_add=True)
 

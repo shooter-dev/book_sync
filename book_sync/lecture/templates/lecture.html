@@ -152,10 +152,13 @@
                                                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A lire</p>
                                                 </div>
                                             </div>
-                                            <button class="mangacollec-red hover:opacity-90 text-white px-2 py-2 h-full flex items-center justify-center transition-all min-w-[40px] group">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-plus-icon lucide-book-plus"><path d="M12 7v6"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/><path d="M9 10h6"/></svg>
-                                                <span class="ml-1 text-xs font-medium hidden sm:inline">Lu</span>
-                                            </button>
+                                            <form method="post" action="{% url 'mark_as_read' possession.volume.id %}" class="h-full">
+                                                {% csrf_token %}
+                                                <button type="submit" class="mangacollec-red hover:opacity-90 text-white px-2 py-2 h-full flex items-center justify-center transition-all min-w-[40px] group">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-plus-icon lucide-book-plus"><path d="M12 7v6"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/><path d="M9 10h6"/></svg>
+                                                    <span class="ml-1 text-xs font-medium hidden sm:inline">Lu</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -202,11 +205,18 @@
                                             <div class="flex-1 min-w-0">
                                                 <h5 class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ read.volume.number }}</h5>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400">{{ read.volume.serie.publisher.title }}</p>
-                                                <div class="flex items-center mt-2">
-                                                    <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-                                                    <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                <div class="flex items-center justify-between mt-2">
+                                                    <div class="flex items-center">
+                                                        <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                    </div>
+                                                    <button onclick="confirmDelete('{{ read.volume.id }}', '{{ read.volume.serie.title|escapejs }}', {{ read.volume.number }})" class="text-red-500 hover:text-red-700 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Collection</p>
                                             </div>
@@ -256,11 +266,18 @@
                                             <div class="flex-1 min-w-0">
                                                 <h5 class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ read.volume.number }}</h5>
                                                 <p class="text-xs text-gray-600 dark:text-gray-400">{{ read.volume.serie.publisher.title }}</p>
-                                                <div class="flex items-center mt-2">
-                                                    <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-                                                    <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                <div class="flex items-center justify-between mt-2">
+                                                    <div class="flex items-center">
+                                                        <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                    </div>
+                                                    <button onclick="confirmDelete('{{ read.volume.id }}', '{{ read.volume.serie.title|escapejs }}', {{ read.volume.number }})" class="text-red-500 hover:text-red-700 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hors collection</p>
                                             </div>
@@ -285,6 +302,11 @@
     </div>
 </div>
 
+<!-- Formulaire caché pour suppression -->
+<form id="deleteForm" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
 <script>
 function showTab(tabName) {
     // Masquer tous les contenus
@@ -305,6 +327,16 @@ function showTab(tabName) {
     const activeButton = document.getElementById('tab-' + tabName);
     activeButton.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300');
     activeButton.classList.add('border-red-500', 'text-red-600', 'dark:text-red-400');
+}
+
+function confirmDelete(volumeId, serieTitle, volumeNumber) {
+    const confirmMessage = `Êtes-vous sûr de vouloir supprimer la lecture de "${serieTitle} - Tome ${volumeNumber}" ?`;
+    
+    if (confirm(confirmMessage)) {
+        const form = document.getElementById('deleteForm');
+        form.action = "{% url 'remove_read' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', volumeId);
+        form.submit();
+    }
 }
 </script>
 {% endblock %}
