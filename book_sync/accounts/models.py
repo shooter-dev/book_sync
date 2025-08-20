@@ -1,6 +1,4 @@
-from django.contrib.auth.models import AbstractUser, Group
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
+from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
