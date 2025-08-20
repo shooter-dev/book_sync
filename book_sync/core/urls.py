@@ -6,5 +6,6 @@ urlpatterns = [
     path('',include('app.urls') ),
     path('accounts/',include('accounts.urls') ),
     path('collection/',include('collection.urls') ),
+    path('ma-lecture/',include('lecture.urls') ),
     path("prediction/", include("prediction.urls")),
 ]

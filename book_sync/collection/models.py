@@ -156,18 +156,3 @@ class Possession(models.Model):
         verbose_name_plural = "Possessions"
         unique_together = ('user', 'volume')
         ordering = ['-ajouter_le']
-
-class Read(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_read_read')
-    volume = models.ForeignKey(Volume, on_delete=models.PROTECT, related_name='user_read_volume')
-    ajouter_le = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} a lu {self.volume}"
-
-    class Meta:
-        verbose_name = "Read"
-        verbose_name_plural = "Reads"
-        unique_together = ('user', 'volume')
-        ordering = ['-ajouter_le']
