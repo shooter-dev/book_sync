@@ -1,5 +1,6 @@
 django
 psycopg2-binary
 python-dotenv
-
+feat_api
+fastapi
 git+https://github.com/shooter-dev/mangacollec_lib.git

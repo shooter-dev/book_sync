@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ma Lecture - BookSync{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- En-tete -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Ma Lecture</h1>
+            <p class="text-gray-600 dark:text-gray-400">Suivez votre progression de lecture et gerez votre pile a lire</p>
+        </div>
+
+        <!-- Statistiques generales -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-red-100 dark:bg-red-900/20">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">En cours</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stats.en_cours }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 dark:bg-green-900/20">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Termines</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stats.termines }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pile a lire</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stats.pile_a_lire }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900/20">
+                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Collection</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stats.progression_collection }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre de progression de collection -->
+        {% if stats.total_possessed > 0 %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Progression de votre collection</h2>
+                <span class="text-sm text-gray-600 dark:text-gray-400">{{ stats.total_read_collection }} / {{ stats.total_possessed }} volumes lus</span>
+            </div>
+            
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
+                <div class="mangacollec-red h-3 rounded-full transition-all duration-500" style="width: {{ stats.progression_collection }}%"></div>
+            </div>
+            
+            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                <span>0%</span>
+                <span class="font-medium text-gray-700 dark:text-gray-300">{{ stats.progression_collection }}% completé</span>
+                <span>100%</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Contenu principal en onglets -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <!-- Navigation des onglets -->
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <nav class="flex justify-center space-x-8 px-6" aria-label="Tabs">
+                    <button onclick="showTab('pile-a-lire')" id="tab-pile-a-lire" class="tab-button relative py-4 px-1 border-b-2 font-medium text-sm border-red-500 text-red-600 dark:text-red-400">
+                        <span>Pile a lire</span>
+                        <span class="absolute -bottom-1 -right-2 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">{{ to_read_collection.count }}</span>
+                    </button>
+                    <button onclick="showTab('termines-collection')" id="tab-termines-collection" class="tab-button relative py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300">
+                        <span>Termines (Collection)</span>
+                        <span class="absolute -bottom-1 -right-2 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">{{ collection_read.count }}</span>
+                    </button>
+                    <button onclick="showTab('termines-hors-collection')" id="tab-termines-hors-collection" class="tab-button relative py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300">
+                        <span>Termines (Hors collection)</span>
+                        <span class="absolute -bottom-1 -right-2 bg-pink-100 dark:bg-pink-900/20 text-pink-800 dark:text-pink-400 text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">{{ non_collection_read.count }}</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Contenu des onglets -->
+            <div class="p-6">
+                <!-- Pile a lire -->
+                <div id="content-pile-a-lire" class="tab-content">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Ma pile a lire</h3>
+                    
+                    {% if to_read_collection %}
+                        {% regroup to_read_collection by volume.serie.title as serie_groups %}
+                        {% for serie in serie_groups %}
+                            <div class="mb-8">
+                                <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-200 dark:border-gray-600">
+                                    {{ serie.grouper }}
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {% for possession in serie.list %}
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-0 overflow-hidden">
+                                        <div class="flex h-full">
+                                            <div class="flex items-start space-x-3 p-4 flex-1">
+                                                <div class="w-16 h-20 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/20 dark:to-green-800/20 rounded flex-shrink-0 overflow-hidden">
+                                                    {% if possession.volume.image_url and possession.volume.image_url != 'cover.png' %}
+                                                        <img src="{{ possession.volume.image_url }}" alt="{{ possession.volume.title }}" class="w-full h-full object-cover">
+                                                    {% else %}
+                                                        <div class="w-full h-full flex items-center justify-center">
+                                                            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm0 2h12v16H6V4z"/>
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <h5 class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ possession.volume.number }}</h5>
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400">{{ possession.volume.serie.publisher.title }}</p>
+                                                    <div class="flex items-center mt-2">
+                                                        <svg class="w-4 h-4 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                                        </svg>
+                                                        <span class="text-xs text-blue-600 dark:text-blue-400">Ajoute le {{ possession.ajouter_le|date:"d/m/Y" }}</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">A lire</p>
+                                                </div>
+                                            </div>
+                                            <form method="post" action="{% url 'mark_as_read' possession.volume.id %}" class="h-full">
+                                                {% csrf_token %}
+                                                <button type="submit" class="mangacollec-red hover:opacity-90 text-white px-2 py-2 h-full flex items-center justify-center transition-all min-w-[40px] group">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-plus-icon lucide-book-plus"><path d="M12 7v6"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/><path d="M9 10h6"/></svg>
+                                                    <span class="ml-1 text-xs font-medium hidden sm:inline">Lu</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Pile a lire vide</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Tous vos volumes possedes ont ete lus !</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Termines Collection -->
+                <div id="content-termines-collection" class="tab-content hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Lectures terminees de ma collection</h3>
+                    
+                    {% if collection_read %}
+                        {% regroup collection_read by volume.serie.title as serie_groups %}
+                        {% for serie in serie_groups %}
+                            <div class="mb-8">
+                                <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-200 dark:border-gray-600">
+                                    {{ serie.grouper }}
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {% for read in serie.list %}
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded flex-shrink-0 overflow-hidden">
+                                                {% if read.volume.image_url and read.volume.image_url != 'cover.png' %}
+                                                    <img src="{{ read.volume.image_url }}" alt="{{ read.volume.title }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <svg class="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm0 2h12v16H6V4z"/>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h5 class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ read.volume.number }}</h5>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">{{ read.volume.serie.publisher.title }}</p>
+                                                <div class="flex items-center justify-between mt-2">
+                                                    <div class="flex items-center">
+                                                        <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                    </div>
+                                                    <button onclick="confirmDelete('{{ read.volume.id }}', '{{ read.volume.serie.title|escapejs }}', {{ read.volume.number }})" class="text-red-500 hover:text-red-700 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Collection</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Aucune lecture terminee</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Commencez a marquer vos lectures de collection comme terminees.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Termines Hors Collection -->
+                <div id="content-termines-hors-collection" class="tab-content hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Lectures terminees hors collection</h3>
+                    
+                    {% if non_collection_read %}
+                        {% regroup non_collection_read by volume.serie.title as serie_groups %}
+                        {% for serie in serie_groups %}
+                            <div class="mb-8">
+                                <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-200 dark:border-gray-600">
+                                    {{ serie.grouper }}
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {% for read in serie.list %}
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/20 dark:to-pink-800/20 rounded flex-shrink-0 overflow-hidden">
+                                                {% if read.volume.image_url and read.volume.image_url != 'cover.png' %}
+                                                    <img src="{{ read.volume.image_url }}" alt="{{ read.volume.title }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <svg class="w-8 h-8 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm0 2h12v16H6V4z"/>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h5 class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ read.volume.number }}</h5>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">{{ read.volume.serie.publisher.title }}</p>
+                                                <div class="flex items-center justify-between mt-2">
+                                                    <div class="flex items-center">
+                                                        <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        <span class="text-xs text-green-600 dark:text-green-400">Termine le {{ read.created_at|date:"d/m/Y" }}</span>
+                                                    </div>
+                                                    <button onclick="confirmDelete('{{ read.volume.id }}', '{{ read.volume.serie.title|escapejs }}', {{ read.volume.number }})" class="text-red-500 hover:text-red-700 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hors collection</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Aucune lecture hors collection</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Vous n'avez pas encore lu de volumes hors de votre collection.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulaire caché pour suppression -->
+<form id="deleteForm" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<script>
+function showTab(tabName) {
+    // Masquer tous les contenus
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.add('hidden'));
+    
+    // Reinitialiser tous les boutons d'onglets
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(button => {
+        button.classList.remove('border-red-500', 'text-red-600', 'dark:text-red-400');
+        button.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300');
+    });
+    
+    // Afficher le contenu selectionne
+    document.getElementById('content-' + tabName).classList.remove('hidden');
+    
+    // Activer le bouton selectionne
+    const activeButton = document.getElementById('tab-' + tabName);
+    activeButton.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300');
+    activeButton.classList.add('border-red-500', 'text-red-600', 'dark:text-red-400');
+}
+
+function confirmDelete(volumeId, serieTitle, volumeNumber) {
+    const confirmMessage = `Êtes-vous sûr de vouloir supprimer la lecture de "${serieTitle} - Tome ${volumeNumber}" ?`;
+    
+    if (confirm(confirmMessage)) {
+        const form = document.getElementById('deleteForm');
+        form.action = "{% url 'remove_read' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', volumeId);
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

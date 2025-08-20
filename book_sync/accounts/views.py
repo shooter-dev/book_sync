@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.cache import never_cache
-from django.contrib.auth.models import User
+from .models import CustomUser as User
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -78,7 +79,10 @@ def register_view(request):
             messages.error(request, "Ce nom d'utilisateur est déjà pris.")
             print("nom déja pris")
         else:
-            User.objects.create_user(username=username, password=password1, email=email)
+            user = User.objects.create_user(username=username, password=password1, email=email)
+            # Assigner automatiquement le nouveau utilisateur au groupe 'user'
+            user_group, created = Group.objects.get_or_create(name='user')
+            user.groups.add(user_group)
             print(username, password1, email)
             messages.success(request, "Votre compte a été créé avec succès. Vous pouvez vous connecter.")
             print("Votre compte a été créé avec succès. Vous pouvez vous connecter.")
@@ -101,6 +105,20 @@ def profile_view(request):
 
 @login_required(login_url='register')
 def subscribe(request):
+    if request.method == 'POST':
+        user = request.user
+        
+        # Ajouter l'utilisateur au groupe premium
+        premium_group, created = Group.objects.get_or_create(name='premium')
+        user_group = Group.objects.get(name='user')
+        
+        # Retirer du groupe user et ajouter au groupe premium
+        user.groups.remove(user_group)
+        user.groups.add(premium_group)
+        
+        messages.success(request, 'Félicitations ! Vous êtes maintenant un utilisateur premium.')
+        return redirect('index')  # Rediriger vers la page d'accueil
+    
     return render(request, 'subscribe.html')
 
 @login_required

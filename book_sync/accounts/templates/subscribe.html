@@ -4,7 +4,28 @@
 {% block content %}
 <div>
   <h2>Abonnement premium</h2>
-  <p>Pour souscrire a notre application. Abonnez-vous</p>
-  <input type="button" class="send:after mangacollec-red submit-button" id="btnsub" value="Abonnez-vous" onclick="alert('En construction!')">
+  
+  {% if user.is_premium %}
+    <div class="alert alert-success">
+      <p>🎉 Félicitations ! Vous êtes déjà un utilisateur premium.</p>
+      <p>Vous avez accès à toutes les fonctionnalités avancées de BookSync.</p>
+      <a href="{% url 'lecture' %}" class="mangacollec-red submit-button">Accéder à mes lectures</a>
+    </div>
+  {% else %}
+    <p>Pour souscrire à notre application et accéder aux fonctionnalités premium. Abonnez-vous</p>
+    <div class="premium-features">
+      <h3>Fonctionnalités premium :</h3>
+      <ul>
+        <li>📚 Gestion avancée de vos lectures</li>
+        <li>📊 Statistiques détaillées de votre collection</li>
+        <li>📝 Listes de lecture personnalisées</li>
+        <li>🎯 Suivi de progression par série</li>
+      </ul>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="submit" class="send:after mangacollec-red submit-button" id="btnsub" value="Abonnez-vous gratuitement">
+    </form>
+  {% endif %}
 </div>
 {% endblock %}
