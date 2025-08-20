@@ -44,6 +44,11 @@ def collection(request):
   
 @csrf_exempt
 def search(request):
+    """
+    fonction search qui permet de trouver les série dans la BDD
+    :param request:
+    :return:
+    """
     series = []
     search_term = ""
 
@@ -168,17 +173,27 @@ def delete_volume_collection(request, volume_id):
     return redirect(request.META.get('HTTP_REFERER', 'home'))
     print("Referer:", referer)
 
+def search_series(search_term):
+    """
+    Fonction utilitaire qui permet de réutiliser la fonction search
+    :param search_term:
+    :return:
+    """
+    if search_term:
+        return Serie.objects.filter(title__icontains=search_term)
+    return Serie.objects.none()
+
 @login_required
 def popup_search(request):
-    series = []
-    search_term = ""
+    """
+    Fonction de recherche qui permet d'utiliser dans popup de la fonction search
+    :param request:
+    :return:
+    """
+    search_term = request.GET.get('search', '')
+    series = search_series(search_term)
 
-    if request.method == "GET" and request.GET.get('search'):
-        search_term = request.GET.get('search')
-        series = Serie.objects.filter(title__icontains=search_term)#.select_related('genre', 'publisher')
-
-    context = {
+    return render(request, 'popup_search.html', {
         'series': series,
         'search_term': search_term,
-    }
-    return render(request, 'popup_search.html', context)
+    })

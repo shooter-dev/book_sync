@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Collection - BookSync{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Ma Collection
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                Gérez et organisez votre collection de livres
+            </p>
+        </div>
+        
+        <!-- Stats rapides -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 mangacollec-red rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total livres</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ total_books }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-purple-500 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Séries</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ total_series }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-green-500 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lus</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ lus }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-yellow-500 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">En cours</p>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ en_cours }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <button onclick="openPopup('{% url 'popup_search' %}')" class="mangacollec-red text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span>Ajouter un livre</span>
+            </button>
+            <button class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
+                </svg>
+                <span>Filtrer</span>
+            </button>
+        </div>
+
+        <!-- Liste des séries avec leurs volumes -->
+        <div class="space-y-6">
+            {% if series_with_volumes %}
+                {% for serie, volumes in series_with_volumes.items %}
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <!-- En-tête de la série -->
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <a href="{% url 'serie_detail' serie.id %}" class="group">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:mangacollec-red-text transition-colors">{{ serie.title }}</h3>
+                                    </a>
+                                    <div class="flex items-center space-x-4 mt-1">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                                            {{ serie.genre.title }}
+                                        </span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ serie.publisher.title }}</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ volumes|length }} tome{{ volumes|length|pluralize }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <a href="{% url 'serie_detail' serie.id %}" class="mangacollec-red text-white px-3 py-1 rounded text-sm hover:opacity-90 transition-opacity">
+                                        Voir série
+                                    </a>
+                                    <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Volumes de la série -->
+                        <div class="p-6">
+                            <div class="volumes-horizontal-container">
+                                {% for possession in volumes %}
+                                    <div class="volume-item group cursor-pointer">
+                                        <div class="relative">
+                                            <!-- Image du volume -->
+                                            <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                                                {% if possession.volume.image_url and possession.volume.image_url != 'cover.png' %}
+                                                    <img src="{{ possession.volume.image_url }}" 
+                                                         alt="Tome {{ possession.volume.number }}: {{ possession.volume.title }}" 
+                                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                                                        <div class="text-center">
+                                                            <div class="text-2xl font-bold text-gray-400 dark:text-gray-500">{{ possession.volume.number }}</div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                <!-- Overlay au hover -->
+                                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                    <div class="flex space-x-2">
+                                                        <button class="bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Informations du volume -->
+                                            <div class="mt-2">
+                                                <div class="text-center">
+                                                    <div class="font-medium text-gray-900 dark:text-white text-sm">Tome {{ possession.volume.number }}</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{{ possession.volume.title }}</div>
+                                                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                                        {{ possession.ajouter_le|date:"d/m/Y" }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucun livre dans votre collection</h3>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">Commencez par ajouter votre premier livre !</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+</div>
+
+<div id="popupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl p-6 relative">
+    <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-white">
+      &times;
+    </button>
+    <div id="popupContent">
+      <!-- Le contenu de la page Django sera injecté ici -->
+    </div>
+  </div>
+</div>
+
+<style>
+/* Styles personnalisés pour MangaCollec */
+.mangacollec-red {
+    background-color: #CF000A;
+}
+
+.mangacollec-red:hover {
+    background-color: #B0000A;
+}
+
+.mangacollec-red-text {
+    color: #CF000A;
+}
+
+.group:hover .group-hover\:mangacollec-red-text {
+    color: #CF000A;
+}
+
+/* Affichage horizontal des volumes avec scrollbar */
+.volumes-horizontal-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #CF000A #f1f1f1;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-thumb {
+    background: #CF000A;
+    border-radius: 4px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-thumb:hover {
+    background: #B0000A;
+}
+
+.volume-item {
+    flex: 0 0 auto;
+    width: 140px;
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+    .mangacollec-red {
+        background-color: #fc3117;
+    }
+    
+    .mangacollec-red:hover {
+        background-color: #e02e15;
+    }
+    
+    .mangacollec-red-text {
+        color: #fc3117;
+    }
+    
+    .group:hover .group-hover\:mangacollec-red-text {
+        color: #fc3117;
+    }
+    
+    .volumes-horizontal-container {
+        scrollbar-color: #fc3117 #374151;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-track {
+        background: #374151;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-thumb {
+        background: #fc3117;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-thumb:hover {
+        background: #e02e15;
+    }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 640px) {
+    .volume-item {
+        width: 120px;
+    }
+}
+</style>
+
+<script>
+    function openPopup(url) {
+  fetch(url)
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('popupContent').innerHTML = html;
+      document.getElementById('popupModal').classList.remove('hidden');
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement du popup :', error);
+    });
+}
+
+function closePopup() {
+  document.getElementById('popupModal').classList.add('hidden');
+  document.getElementById('popupContent').innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Attendre que le contenu du popup soit chargé
+  const observer = new MutationObserver(() => {
+    const form = document.getElementById('searchForm');
+    if (form && !form.dataset.bound) {
+      form.dataset.bound = true; // éviter de binder plusieurs fois
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const query = document.getElementById('search').value;
+        fetch(`/collection/popup-search/?search=${encodeURIComponent(query)}`)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const results = doc.getElementById('searchResults');
+            const formContent = doc.getElementById('popupContent');
+
+            if (results) {
+              document.getElementById('searchResults').innerHTML = results.innerHTML;
+            }
+
+            // Optionnel : mettre à jour tout le popup si nécessaire
+            if (formContent) {
+              document.getElementById('popupContent').innerHTML = formContent.innerHTML;
+            }
+          })
+          .catch(error => {
+            console.error('Erreur AJAX :', error);
+          });
+      });
+    }
+  });
+
+  observer.observe(document.getElementById('popupContent'), { childList: true, subtree: true });
+});
+</script>
+{% endblock %}

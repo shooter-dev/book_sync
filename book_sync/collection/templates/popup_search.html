@@ -17,7 +17,7 @@
         <!-- Barre de recherche -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
             <div class="p-6">
-                <form class="space-y-4" method="GET">
+                <form id="searchForm" class="space-y-4" method="GET">
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex-1">
                             <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -52,7 +52,7 @@
 <p class="mt-2 text-gray-500 dark:text-gray-400">Utilisez la barre de recherche ci-dessus pour trouver des livres</p>
 {% endif %}
         <!-- Résultats de recherche -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div id="searchResults" class="bg-white dark:bg-gray-800 rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Résultats de recherche</h2>
             </div>
@@ -106,4 +106,6 @@
             </div>
         </div>
 </div>
+
+
 {% endblock %}
