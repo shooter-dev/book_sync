@@ -125,9 +125,9 @@
                         
                         <!-- Volumes de la série -->
                         <div class="p-6">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            <div class="volumes-horizontal-container">
                                 {% for possession in volumes %}
-                                    <div class="group cursor-pointer">
+                                    <div class="volume-item group cursor-pointer">
                                         <div class="relative">
                                             <!-- Image du volume -->
                                             <div class="aspect-[3/4] bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
@@ -205,6 +205,40 @@
     color: #CF000A;
 }
 
+/* Affichage horizontal des volumes avec scrollbar */
+.volumes-horizontal-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #CF000A #f1f1f1;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-thumb {
+    background: #CF000A;
+    border-radius: 4px;
+}
+
+.volumes-horizontal-container::-webkit-scrollbar-thumb:hover {
+    background: #B0000A;
+}
+
+.volume-item {
+    flex: 0 0 auto;
+    width: 140px;
+}
+
+/* Mode sombre */
 @media (prefers-color-scheme: dark) {
     .mangacollec-red {
         background-color: #fc3117;
@@ -220,6 +254,29 @@
     
     .group:hover .group-hover\:mangacollec-red-text {
         color: #fc3117;
+    }
+    
+    .volumes-horizontal-container {
+        scrollbar-color: #fc3117 #374151;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-track {
+        background: #374151;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-thumb {
+        background: #fc3117;
+    }
+    
+    .volumes-horizontal-container::-webkit-scrollbar-thumb:hover {
+        background: #e02e15;
+    }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 640px) {
+    .volume-item {
+        width: 120px;
     }
 }
 </style>

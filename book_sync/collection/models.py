@@ -2,11 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
-
 class Authors(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255,blank=True, null=True)
 
     def __str__(self):
         if self.first_name is None:
@@ -82,8 +81,7 @@ class Serie(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     kinds = models.ManyToManyField(Kind, blank=True)
-
-    # author = models.ForeignKey(Authors, on_delete=models.CASCADE)
+    #author = models.ForeignKey(Authors, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -101,8 +99,8 @@ class Volume(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     number = models.IntegerField(default=1)
-    release_date = models.DateField()
-    isbn = models.CharField(max_length=13, unique=True)
+    release_date = models.DateField(null=True, blank=True)
+    isbn = models.CharField(null=True, blank=True)
     possessions_count = models.IntegerField(default=0)
     image_url = models.TextField(default='cover.png')
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
@@ -156,5 +154,20 @@ class Possession(models.Model):
     class Meta:
         verbose_name = "Possession"
         verbose_name_plural = "Possessions"
+        unique_together = ('user', 'volume')
+        ordering = ['-ajouter_le']
+
+class Read(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='user_read_read')
+    volume = models.ForeignKey(Volume, on_delete=models.PROTECT, related_name='user_read_volume')
+    ajouter_le = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} a lu {self.volume}"
+
+    class Meta:
+        verbose_name = "Read"
+        verbose_name_plural = "Reads"
         unique_together = ('user', 'volume')
         ordering = ['-ajouter_le']
