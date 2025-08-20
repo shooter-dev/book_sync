@@ -1,11 +1,9 @@
 from accounts.models import CustomUser as User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, Q, Prefetch
 from django.contrib import messages
-from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
-from collection.models import Possession, Volume, Serie
+from collection.models import Possession, Volume
 from .models import Read
 
 
@@ -145,45 +143,3 @@ def remove_read(request, volume_id):
         messages.error(request, 'Une erreur est survenue lors de la suppression de la lecture.')
     
     return redirect('lecture')
-
-
-@login_required
-@user_passes_test(is_premium, login_url='/accounts/subscribe/')
-def lecture_stats(request):
-    """Vue dédiée aux statistiques avancées de lecture (premium)"""
-    user = request.user
-    
-    # Récupération des données pour les statistiques
-    user_reads = Read.objects.filter(user=user).select_related('volume__serie', 'volume__serie__genre')
-    user_possessions = Possession.objects.filter(user=user).select_related('volume__serie', 'volume__serie__genre')
-    
-    # Statistiques par genre
-    genre_stats = {}
-    for read in user_reads:
-        genre = read.volume.serie.genre.title
-        genre_stats[genre] = genre_stats.get(genre, 0) + 1
-    
-    # Statistiques temporelles (lectures par mois)
-    from django.db.models.functions import TruncMonth
-    
-    monthly_reads = (Read.objects.filter(user=user)
-                    .annotate(month=TruncMonth('created_at'))
-                    .values('month')
-                    .annotate(count=Count('id'))
-                    .order_by('month'))
-    
-    # Top 5 séries les plus lues
-    top_series = (Read.objects.filter(user=user)
-                 .values('volume__serie__title')
-                 .annotate(count=Count('id'))
-                 .order_by('-count')[:5])
-    
-    context = {
-        'genre_stats': dict(sorted(genre_stats.items())),
-        'monthly_reads': list(monthly_reads),
-        'top_series': top_series,
-        'total_reads': user_reads.count(),
-        'total_possessions': user_possessions.count(),
-    }
-    
-    return render(request, 'lecture_stats.html', context)
