@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'app',
     'accounts',
     'collection',
-    'lecture'
+    'lecture',
     "prediction",
 ]
 
