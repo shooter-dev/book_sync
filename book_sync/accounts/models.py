@@ -20,11 +20,3 @@ class CustomUser(AbstractUser):
     def __str__(self):
         premium_status = " (Premium)" if self.is_premium else ""
         return f"{self.username}{premium_status}"
-
-
-@receiver(post_migrate)
-def create_user_groups(sender, **kwargs):
-    """Crée automatiquement les groupes 'premium' et 'user' après les migrations"""
-    if sender.name == 'accounts':
-        Group.objects.get_or_create(name='premium')
-        Group.objects.get_or_create(name='user')
