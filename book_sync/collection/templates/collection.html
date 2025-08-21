@@ -76,7 +76,7 @@
 
         <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4 mb-8">
-            <button class="mangacollec-red text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center space-x-2">
+            <button onclick="openPopup('{% url 'popup_search' %}')" class="mangacollec-red text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
@@ -187,6 +187,17 @@
         </div>
 </div>
 
+<div id="popupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl p-6 relative">
+    <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-white">
+      &times;
+    </button>
+    <div id="popupContent">
+      <!-- Le contenu de la page Django sera injecté ici -->
+    </div>
+  </div>
+</div>
+
 <style>
 /* Styles personnalisés pour MangaCollec */
 .mangacollec-red {
@@ -280,4 +291,60 @@
     }
 }
 </style>
+
+<script>
+    function openPopup(url) {
+  fetch(url)
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('popupContent').innerHTML = html;
+      document.getElementById('popupModal').classList.remove('hidden');
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement du popup :', error);
+    });
+}
+
+function closePopup() {
+  document.getElementById('popupModal').classList.add('hidden');
+  document.getElementById('popupContent').innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Attendre que le contenu du popup soit chargé
+  const observer = new MutationObserver(() => {
+    const form = document.getElementById('searchForm');
+    if (form && !form.dataset.bound) {
+      form.dataset.bound = true; // éviter de binder plusieurs fois
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const query = document.getElementById('search').value;
+        fetch(`/collection/popup-search/?search=${encodeURIComponent(query)}`)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const results = doc.getElementById('searchResults');
+            const formContent = doc.getElementById('popupContent');
+
+            if (results) {
+              document.getElementById('searchResults').innerHTML = results.innerHTML;
+            }
+
+            // Optionnel : mettre à jour tout le popup si nécessaire
+            if (formContent) {
+              document.getElementById('popupContent').innerHTML = formContent.innerHTML;
+            }
+          })
+          .catch(error => {
+            console.error('Erreur AJAX :', error);
+          });
+      });
+    }
+  });
+
+  observer.observe(document.getElementById('popupContent'), { childList: true, subtree: true });
+});
+</script>
 {% endblock %}
