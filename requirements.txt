@@ -3,3 +3,4 @@ psycopg2-binary
 python-dotenv
 fastapi
 git+https://github.com/shooter-dev/mangacollec_lib.git
+uvicorn
