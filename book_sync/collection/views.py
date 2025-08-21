@@ -152,7 +152,7 @@ def add_collection(request, volume_id):
         Possession.objects.create(
             user_id=request.user.id,
             volume_id=volume.id,
-            ajouter_le=datetime.now()
+            created_at=datetime.now()
         )
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
