@@ -103,6 +103,7 @@ class Volume(models.Model):
     isbn = models.CharField(null=True, blank=True)
     possessions_count = models.IntegerField(default=0)
     image_url = models.TextField(default='cover.png', null=True, blank=True)
+    content = models.TextField(default='...', null=True, blank=True)
     serie = models.ForeignKey(Serie, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -156,3 +157,36 @@ class Possession(models.Model):
         verbose_name_plural = "Possessions"
         unique_together = ('user', 'volume')
         ordering = ['-created_at']
+
+
+
+class like_kind(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)# , related_name='user_')
+    kind = models.ForeignKey(Kind, on_delete=models.PROTECT) # , related_name='user_like_kind')
+    like = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.like:
+            return f"{self.user.username} aime {self.kind.title}"
+        return f"{self.user.username} n'aime pas {self.kind.title}"
+
+    class Meta:
+        unique_together = ('user', 'kind')
+
+
+class like_genre(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
+    like = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.like:
+            return f"{self.user.username} aime {self.genre.title}"
+        return f"{self.user.username} n'aime pas {self.genre.title}"
+
+    class Meta:
+        unique_together = ('user', 'genre')

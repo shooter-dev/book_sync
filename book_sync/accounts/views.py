@@ -1,5 +1,3 @@
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,6 +9,8 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from collection.models import like_kind, like_genre
+import json
 
 @never_cache
 @csrf_protect
@@ -101,7 +101,35 @@ def logout_view(request):
     return redirect('index')
 
 def profile_view(request):
-    return render(request, 'profile.html')
+    # Récupérer les kinds et genres avec les préférences de l'utilisateur
+    context = {}
+    
+    if request.user.is_authenticated:
+        # Récupérer SEULEMENT les préférences existantes de l'utilisateur
+        user_kind_likes = like_kind.objects.filter(user=request.user).select_related('kind')
+        user_genre_likes = like_genre.objects.filter(user=request.user).select_related('genre')
+        
+        # Préparer les données pour le template - seulement les préférences existantes
+        kinds_data = []
+        for like in user_kind_likes:
+            kinds_data.append({
+                'id': str(like.kind.id),
+                'title': like.kind.title,
+                'userPreference': like.like
+            })
+            
+        genres_data = []
+        for like in user_genre_likes:
+            genres_data.append({
+                'id': str(like.genre.id),
+                'title': like.genre.title,
+                'userPreference': like.like
+            })
+        
+        context['kinds_data'] = json.dumps(kinds_data)
+        context['genres_data'] = json.dumps(genres_data)
+    
+    return render(request, 'profile.html', context)
 
 @login_required(login_url='register')
 def subscribe(request):
