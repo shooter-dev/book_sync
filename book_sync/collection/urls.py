@@ -9,5 +9,8 @@ urlpatterns = [
     path("volume/<uuid:volume_id>/", views.volume_detail, name="volume_detail"),
     path('add/<uuid:volume_id>/', views.add_collection, name='add_collection'),
     path('delete/<uuid:volume_id>/', views.delete_volume_collection, name='delete_volume_collection'),
-    path('popup-search/', views.popup_search, name='popup_search')
+    path('popup-search/', views.popup_search, name='popup_search'),
+    path('update-preferences/', views.update_preferences, name='update_preferences'),
+    path('search-content/', views.search_content, name='search_content'),
+    path('add-preference/', views.add_preference, name='add_preference'),
 ]

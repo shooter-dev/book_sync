@@ -169,8 +169,24 @@ class like_kind(models.Model):
 
     def __str__(self):
         if self.like:
-            return f"{self.user.username} aime {self.kind.name}"
-        return f"{self.user.username} n'aime pas {self.kind.name}"
+            return f"{self.user.username} aime {self.kind.title}"
+        return f"{self.user.username} n'aime pas {self.kind.title}"
 
     class Meta:
         unique_together = ('user', 'kind')
+
+
+class like_genre(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
+    like = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.like:
+            return f"{self.user.username} aime {self.genre.title}"
+        return f"{self.user.username} n'aime pas {self.genre.title}"
+
+    class Meta:
+        unique_together = ('user', 'genre')
