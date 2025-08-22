@@ -216,7 +216,7 @@
                         Sélectionnez les kinds et genres que vous aimez (vert) ou n'aimez pas (rouge) :
                     </p>
                     
-                    <form method="post" action="{% url 'update_preferences' %}" class="space-y-6">
+                    <form method="post" action="/collection/update-preferences/" class="space-y-6">
                         {% csrf_token %}
                         
                         <!-- Section Kinds -->
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentType = tagElement.getAttribute('data-type');
         
         // Appel AJAX pour supprimer la préférence
-        fetch("{% url 'add_preference' %}", {
+        fetch("/collection/add-preference/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentType = tagElement.getAttribute('data-type');
         
         // Appel AJAX pour mettre à jour la préférence
-        fetch("{% url 'add_preference' %}", {
+        fetch("/collection/add-preference/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        fetch(`{% url 'search_content' %}?q=${encodeURIComponent(searchTerm)}&type=${type}`)
+        fetch(`/collection/search-content/?q=${encodeURIComponent(searchTerm)}&type=${type}`)
         .then(response => response.json())
         .then(data => {
             resultsContainer.innerHTML = '';
@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const title = resultItem.getAttribute('data-title');
             
             // Ajouter avec préférence "j'aime" par défaut
-            fetch("{% url 'add_preference' %}", {
+            fetch("/collection/add-preference/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

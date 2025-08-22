@@ -311,8 +311,7 @@ def search_content(request):
             # Rechercher dans les genres qui ne sont pas déjà dans les préférences
             existing_genre_ids = like_genre.objects.filter(user=user).values_list('genre_id', flat=True)
             genres = Genre.objects.filter(
-                title__icontains=search_term,
-                to_display=True
+                title__icontains=search_term
             ).exclude(id__in=existing_genre_ids)[:10]
 
             for genre in genres:
