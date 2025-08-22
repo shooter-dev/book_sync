@@ -42,20 +42,17 @@
         </div>
 
         <!-- Question 3 : Genre préféré -->
-        <div id="step-genre-preference" class="hidden">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quel est votre genre de préférence ?</p>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <button class="response-btn">Manga</button>
-                <button class="response-btn">Webtoon</button>
-                <button class="response-btn">BD</button>
-                <button class="response-btn">Roman</button>
-                <button class="response-btn">Light Novel</button>
-                <button class="response-btn">Autre</button>
-            </div>
-        </div>
+<!-- Question 3 : Genre préféré -->
+<div id="step-genre-preference" class="">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {% for genre in genres %}
+                <button class="response-btn">{{ genre.title }}</button>
+            {% endfor %}
+    </div>
+</div>
 
-<!-- Question 4 : Catégorie préférée -->
-<div id="step-category-preference" class="hidden">
+        <!-- Question 4 : Catégorie préférée -->
+        <div id="step-category-preference" class="hidden">
     <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quelle est votre catégorie de préférence ?</p>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         {% for kind in kinds %}
