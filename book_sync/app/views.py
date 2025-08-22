@@ -17,3 +17,6 @@ def collection(request):
 
 def recommendation(request):
     return render(request, 'recommendation.html')
+
+def prediction(request):
+    return render(request, 'prediction.html')

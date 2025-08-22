@@ -22,6 +22,16 @@
                 Découvrez des livres personnalisés selon vos goûts grâce à l'intelligence artificielle
             </p>
         </div>
+<!-- Bouton Lancer une prédiction -->
+<div class="w-full mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex justify-center items-center h-[88px]">
+        <a href="{% url 'prediction' %}" class="bg-red-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-red-700 transition-colors">
+            Lancer une prédiction de livre
+        </a>
+    </div>
+</div>
+
+
 
         <!-- Stats et préférences -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
