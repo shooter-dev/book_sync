@@ -10,4 +10,6 @@ urlpatterns = [
     path("subscribe/", views.subscribe, name="subscribe"),
     path('changer-mdp/', views.change_password_view, name='change_password'),
     path('delete_user/<int:pk>/', views.delete_user, name="delete_user"),
+    path('update-age-info/', views.update_age_info, name='update_age_info'),
+    path('update-mature-content/', views.update_mature_content, name='update_mature_content'),
 ]

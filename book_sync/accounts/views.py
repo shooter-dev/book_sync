@@ -194,3 +194,76 @@ def delete_user(request,pk):
             except Exception as e:
                 messages.info(request, "Erreur, Utilisateur n'a pas pu être supprimer supprimé")
                 return redirect('index')
+
+@login_required
+def update_age_info(request):
+    """
+    Vue pour mettre à jour les informations d'âge de l'utilisateur
+    IMPORTANT: L'âge ne peut être défini qu'une seule fois pour des raisons de sécurité
+    """
+    if request.method == 'POST':
+        user = request.user
+        
+        if user.age is not None:
+            messages.error(request, 'Votre âge est déjà défini et ne peut pas être modifié pour des raisons de sécurité.')
+            return redirect('profile')
+        
+        age = request.POST.get('age')
+        if age:
+            try:
+                age = int(age)
+                if 1 <= age <= 120:
+                    user.age = age
+                else:
+                    messages.error(request, 'L\'âge doit être compris entre 1 et 120 ans.')
+                    return redirect('profile')
+            except ValueError:
+                messages.error(request, 'Veuillez entrer un âge valide.')
+                return redirect('profile')
+        else:
+            messages.error(request, 'Veuillez saisir votre âge.')
+            return redirect('profile')
+        
+        is_adult = age >= 18
+        user.is_adult = is_adult
+        
+        if age < 16:
+            user.show_mature_content = False
+        
+        user.save()
+        
+        if is_adult:
+            messages.success(request, 'Vos informations d\'âge ont été définitivement sauvegardées. Vous pouvez maintenant accéder aux paramètres de contenu mature.')
+        else:
+            messages.success(request, 'Vos informations d\'âge ont été définitivement sauvegardées.')
+        
+        messages.info(request, '⚠️ Important: Ces informations ne peuvent plus être modifiées.')
+        
+        return redirect('profile')
+    
+    return redirect('profile')
+
+@login_required
+def update_mature_content(request):
+    """
+    Vue pour mettre à jour les préférences d'affichage du contenu mature
+    """
+    if request.method == 'POST':
+        user = request.user
+        
+        if not user.can_access_mature_content:
+            messages.error(request, 'Vous devez être âgé de 16 ans ou plus pour modifier ces paramètres.')
+            return redirect('profile')
+        
+        show_mature = request.POST.get('show_mature_content') == '1'
+        user.show_mature_content = show_mature
+        user.save()
+        
+        if show_mature:
+            messages.success(request, 'Les couvertures explicites seront désormais affichées.')
+        else:
+            messages.success(request, 'Les couvertures explicites seront désormais masquées.')
+        
+        return redirect('profile')
+    
+    return redirect('profile')
