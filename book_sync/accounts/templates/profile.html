@@ -47,6 +47,83 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Informations d'âge -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Informations d'âge
+                    </h3>
+                    <form method="post" action="{% url 'update_age_info' %}" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="max-w-sm">
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Âge
+                                    {% if user.age %}
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">(non modifiable)</span>
+                                    {% endif %}
+                                </label>
+                                <input type="number" id="age" name="age" value="{{ user.age|default:'' }}" min="1" max="120"
+                                       class="mangacollec-input form-input mt-1 {% if user.age %}bg-gray-100 dark:bg-gray-700 cursor-not-allowed{% endif %}" 
+                                       placeholder="Votre âge"
+                                       {% if user.age %}readonly disabled{% endif %}>
+                                {% if user.age %}
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Statut : {% if user.is_adult %}🔞 Adulte (18+){% else %}👶 Mineur{% endif %}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if user.age %}
+                            <!-- Message pour âge déjà défini -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-800 dark:text-blue-200">
+                                            <strong>Informations d'âge définies :</strong> Votre âge ({{ user.age }} ans) et votre statut {% if user.is_adult %}adulte{% else %}mineur{% endif %} sont maintenant enregistrés et ne peuvent plus être modifiés pour des raisons de sécurité.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Message pour âge à définir -->
+                            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                                            <strong>Information importante :</strong> Ces informations nous aident à adapter le contenu approprié à votre âge. 
+                                            Le statut adulte sera déterminé automatiquement selon votre âge (18 ans ou plus).
+                                            <br><br>
+                                            <strong>⚠️ Attention :</strong> Une fois votre âge sauvegardé, vous ne pourrez plus le modifier.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if not user.age %}
+                            <div class="flex justify-end">
+                                <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                    Sauvegarder définitivement
+                                </button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
                 <!-- Changement de mot de passe -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
@@ -173,35 +250,67 @@
                         Affichage des couvertures
                     </h3>
                     <div class="space-y-4">
-                        <div>
-                            <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                🔞 Voir les couvertures explicites
-                            </p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                                Afficher les couvertures de livres avec contenu mature/explicite (réservé aux adultes)
-                            </p>
-                            
-                            <div class="relative inline-block">
-                                <button type="button" id="mature-content-button" 
-                                        class="flex items-center justify-between w-48 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                                    <span id="mature-content-text">Non</span>
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
+                        {% if user.can_access_mature_content %}
+                            <!-- L'utilisateur a 16 ans ou plus, il peut choisir -->
+                            <form method="post" action="{% url 'update_mature_content' %}" class="space-y-4">
+                                {% csrf_token %}
+                                <div>
+                                    <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        🔞 Afficher les couvertures explicites
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                                        Afficher les couvertures de livres avec contenu mature/explicite
+                                    </p>
+                                    
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="mature-yes" name="show_mature_content" type="radio" value="1" 
+                                                   {% if user.show_mature_content %}checked{% endif %}
+                                                   class="mangacollec-checkbox">
+                                            <label for="mature-yes" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                                Oui, afficher les couvertures explicites
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="mature-no" name="show_mature_content" type="radio" value="0"
+                                                   {% if not user.show_mature_content %}checked{% endif %}
+                                                   class="mangacollec-checkbox">
+                                            <label for="mature-no" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                                Non, masquer les couvertures explicites
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <div id="mature-content-dropdown" class="absolute z-10 w-48 mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg hidden">
-                                    <div class="py-1">
-                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="non">
-                                            Non
-                                        </button>
-                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="oui">
-                                            Oui
-                                        </button>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                        Sauvegarder
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <!-- L'utilisateur a moins de 16 ans, accès bloqué -->
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                                            Accès restreint
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                                            <p>
+                                                Cette option est réservée aux utilisateurs de 16 ans ou plus. 
+                                                Veuillez mettre à jour vos informations d'âge dans la section "Informations d'âge" ci-dessus.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -642,6 +751,27 @@ document.addEventListener('DOMContentLoaded', function() {
             genreSearchResults.classList.add('hidden');
         }
     });
+    
+    // Confirmation avant soumission pour âge non encore défini
+    const ageInput = document.getElementById('age');
+    
+    if (ageInput && !ageInput.disabled) {
+        const ageForm = ageInput.closest('form');
+        if (ageForm) {
+            ageForm.addEventListener('submit', function(e) {
+                const age = parseInt(ageInput.value);
+                if (age && !confirm(
+                    `⚠️ CONFIRMATION IMPORTANTE ⚠️\n\n` +
+                    `Vous allez définir votre âge à ${age} ans.\n\n` +
+                    `ATTENTION: Cette information ne pourra PLUS JAMAIS être modifiée pour des raisons de sécurité.\n\n` +
+                    `Le statut adulte sera déterminé automatiquement selon votre âge.\n\n` +
+                    `Êtes-vous absolument certain(e) de votre âge ?`
+                )) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
     
     // Mature content dropdown (code existant)
     const matureContentButton = document.getElementById('mature-content-button');
