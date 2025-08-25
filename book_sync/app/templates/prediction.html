@@ -26,7 +26,7 @@
         <!-- Question 1 : Âge -->
         <div id="step-age">
             <label for="user_age" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Quel est votre âge ?</label>
-            <input type="number" id="user_age" name="user_age" min="1" max="100" required
+            <input type="number" id="user_age" name="user_age" value="{{user.age}}"
                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white">
             <button onclick="nextStep('step-gender')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
         </div>
@@ -83,6 +83,23 @@
             </button>
         </div>
 
+        <!-- Nouvelle question : type de prédiction -->
+        <div id="step-prediction-type" class="hidden">
+            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                Voulez-vous une prédiction sur les livres ?
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="prediction-type-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                        data-type="collection">
+                    Collection
+                </button>
+                <button class="prediction-type-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
+                        data-type="proposition">
+                    Proposition de découverte
+                </button>
+            </div>
+        </div>
+
         <!-- Question finale : libre -->
         <div id="step-final" class="hidden">
             <label for="user_comment" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Une dernière chose à nous dire ?</label>
@@ -105,4 +122,3 @@
 <!-- Chargement du script JS externe -->
 <script src="{% static 'js/prediction.js' %}"></script>
 {% endblock %}
-

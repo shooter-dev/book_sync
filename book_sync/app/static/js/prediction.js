@@ -3,7 +3,8 @@ const responses = {
     user_genre: null,
     user_genre_preference: [],
     user_category_preference: [],
-    user_comment: null
+    user_comment: null,
+    prediction_type: null
 };
 
 function nextStep(nextId) {
@@ -15,6 +16,8 @@ function nextStep(nextId) {
         syncSelectionStyles('genre');
     } else if (nextId === 'step-category-preference') {
         syncSelectionStyles('kind');
+    } else if (nextId === 'step-prediction-type') {
+        // aucune action spécifique pour le moment
     } else if (nextId === 'step-final') {
         const textarea = document.getElementById('user_comment');
         if (textarea) textarea.value = responses.user_comment || '';
@@ -56,7 +59,8 @@ function updateRecap() {
         user_genre: "Genre",
         user_genre_preference: "Genres préférés",
         user_category_preference: "Catégories préférées",
-        user_comment: "Commentaire"
+        user_comment: "Commentaire",
+        prediction_type: "Type de prédiction"
     };
 
     Object.entries(responses).forEach(([key, value]) => {
@@ -81,6 +85,7 @@ function modifyField(field) {
         user_genre: "step-gender",
         user_genre_preference: "step-genre-preference",
         user_category_preference: "step-category-preference",
+        prediction_type: "step-prediction-type",
         user_comment: "step-final"
     };
     nextStep(stepMap[field]);
@@ -100,7 +105,6 @@ function validateAgeAndContinue() {
     responses.user_age = ageInput.value;
     saveAge();
 }
-
 
 function modifyAge() {
     const ageStep = document.getElementById('step-age');
@@ -214,9 +218,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Veuillez sélectionner entre 1 et 5 catégories.");
                 return;
             }
-            nextStep('step-final');
+            nextStep('step-prediction-type');
         });
     }
+
+    const predictionBtns = document.querySelectorAll('.prediction-type-btn');
+    predictionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            responses.prediction_type = btn.getAttribute('data-type');
+            updateRecap();
+            nextStep('step-final');
+        });
+    });
 
     const comment = document.getElementById('user_comment');
     if (comment) comment.addEventListener('input', e => {
@@ -224,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateRecap();
     });
 });
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const userAgeFromDB = parseInt("{{ user_age|default:'0' }}");
@@ -243,4 +255,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
