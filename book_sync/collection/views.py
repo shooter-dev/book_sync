@@ -1,10 +1,11 @@
 from datetime import datetime
 from pyexpat.errors import messages
 
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Possession, Volume, Serie, Genre, Publisher
+from .models import Possession, Volume, Serie, Genre, Publisher, Kind, like_kind, like_genre
 from django.contrib import messages
 
 from .services import VolumeService, CollectionService
@@ -197,3 +198,209 @@ def popup_search(request):
         'series': series,
         'search_term': search_term,
     })
+
+
+@login_required
+def update_preferences(request):
+    """
+    Vue pour traiter les préférences de contenu (kinds et genres)
+    """
+    if request.method == 'POST':
+        user = request.user
+
+        # Traiter les préférences des kinds
+        for key, value in request.POST.items():
+            if key.startswith('kind_preference_'):
+                kind_id = key.replace('kind_preference_', '')
+                try:
+                    kind = get_object_or_404(Kind, id=kind_id)
+
+                    # Convertir la valeur string en boolean ou None
+                    if value == 'true':
+                        preference_value = True
+                    elif value == 'false':
+                        preference_value = False
+                    else:
+                        preference_value = None
+
+                    if preference_value is not None:
+                        # Créer ou mettre à jour la préférence
+                        like_kind_obj, created = like_kind.objects.get_or_create(
+                            user=user,
+                            kind=kind,
+                            defaults={'like': preference_value}
+                        )
+                        if not created:
+                            like_kind_obj.like = preference_value
+                            like_kind_obj.save()
+                    else:
+                        # Supprimer la préférence si elle existe
+                        like_kind.objects.filter(user=user, kind=kind).delete()
+
+                except (ValueError, Kind.DoesNotExist):
+                    continue
+
+        # Traiter les préférences des genres
+        for key, value in request.POST.items():
+            if key.startswith('genre_preference_'):
+                genre_id = key.replace('genre_preference_', '')
+                try:
+                    genre = get_object_or_404(Genre, id=genre_id)
+
+                    # Convertir la valeur string en boolean ou None
+                    if value == 'true':
+                        preference_value = True
+                    elif value == 'false':
+                        preference_value = False
+                    else:
+                        preference_value = None
+
+                    if preference_value is not None:
+                        # Créer ou mettre à jour la préférence
+                        like_genre_obj, created = like_genre.objects.get_or_create(
+                            user=user,
+                            genre=genre,
+                            defaults={'like': preference_value}
+                        )
+                        if not created:
+                            like_genre_obj.like = preference_value
+                            like_genre_obj.save()
+                    else:
+                        # Supprimer la préférence si elle existe
+                        like_genre.objects.filter(user=user, genre=genre).delete()
+
+                except (ValueError, Genre.DoesNotExist):
+                    continue
+
+        messages.success(request, 'Vos préférences de contenu ont été sauvegardées avec succès!')
+        return redirect('profile')
+
+    return redirect('profile')
+
+
+@login_required
+def search_content(request):
+    """
+    Vue AJAX pour rechercher des kinds et genres à ajouter
+    """
+    if request.method == 'GET':
+        search_term = request.GET.get('q', '').strip()
+        content_type = request.GET.get('type', '')  # 'kind' ou 'genre'
+
+        if not search_term or content_type not in ['kind', 'genre']:
+            return JsonResponse({'results': []})
+
+        user = request.user
+        results = []
+
+        if content_type == 'kind':
+            # Rechercher dans les kinds qui ne sont pas déjà dans les préférences
+            existing_kind_ids = like_kind.objects.filter(user=user).values_list('kind_id', flat=True)
+            kinds = Kind.objects.filter(
+                title__icontains=search_term
+            ).exclude(id__in=existing_kind_ids)[:10]
+
+            for kind in kinds:
+                results.append({
+                    'id': str(kind.id),
+                    'title': kind.title,
+                    'type': 'kind'
+                })
+
+        elif content_type == 'genre':
+            # Rechercher dans les genres qui ne sont pas déjà dans les préférences
+            existing_genre_ids = like_genre.objects.filter(user=user).values_list('genre_id', flat=True)
+            genres = Genre.objects.filter(
+                title__icontains=search_term
+            ).exclude(id__in=existing_genre_ids)[:10]
+
+            for genre in genres:
+                results.append({
+                    'id': str(genre.id),
+                    'title': genre.title,
+                    'type': 'genre'
+                })
+
+        return JsonResponse({'results': results})
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@login_required
+def add_preference(request):
+    """
+    Vue AJAX pour ajouter une nouvelle préférence
+    """
+    if request.method == 'POST':
+        content_id = request.POST.get('content_id')
+        content_type = request.POST.get('content_type')  # 'kind' ou 'genre'
+        preference = request.POST.get('preference')  # 'true', 'false', ou 'null'
+
+        if not content_id or content_type not in ['kind', 'genre']:
+            return JsonResponse({'error': 'Paramètres invalides'}, status=400)
+
+        # Convertir la préférence
+        if preference == 'true':
+            preference_value = True
+        elif preference == 'false':
+            preference_value = False
+        else:
+            preference_value = None
+
+        user = request.user
+
+        try:
+            if content_type == 'kind':
+                kind = get_object_or_404(Kind, id=content_id)
+                if preference_value is not None:
+                    like_kind_obj, created = like_kind.objects.get_or_create(
+                        user=user,
+                        kind=kind,
+                        defaults={'like': preference_value}
+                    )
+                    if not created:
+                        like_kind_obj.like = preference_value
+                        like_kind_obj.save()
+
+                    return JsonResponse({
+                        'success': True,
+                        'item': {
+                            'id': str(kind.id),
+                            'title': kind.title,
+                            'userPreference': preference_value,
+                            'type': 'kind'
+                        }
+                    })
+                else:
+                    like_kind.objects.filter(user=user, kind=kind).delete()
+                    return JsonResponse({'success': True, 'deleted': True})
+
+            elif content_type == 'genre':
+                genre = get_object_or_404(Genre, id=content_id)
+                if preference_value is not None:
+                    like_genre_obj, created = like_genre.objects.get_or_create(
+                        user=user,
+                        genre=genre,
+                        defaults={'like': preference_value}
+                    )
+                    if not created:
+                        like_genre_obj.like = preference_value
+                        like_genre_obj.save()
+
+                    return JsonResponse({
+                        'success': True,
+                        'item': {
+                            'id': str(genre.id),
+                            'title': genre.title,
+                            'userPreference': preference_value,
+                            'type': 'genre'
+                        }
+                    })
+                else:
+                    like_genre.objects.filter(user=user, genre=genre).delete()
+                    return JsonResponse({'success': True, 'deleted': True})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

@@ -47,6 +47,83 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Informations d'âge -->
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                        Informations d'âge
+                    </h3>
+                    <form method="post" action="{% url 'update_age_info' %}" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="max-w-sm">
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Âge
+                                    {% if user.age %}
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">(non modifiable)</span>
+                                    {% endif %}
+                                </label>
+                                <input type="number" id="age" name="age" value="{{ user.age|default:'' }}" min="1" max="120"
+                                       class="mangacollec-input form-input mt-1 {% if user.age %}bg-gray-100 dark:bg-gray-700 cursor-not-allowed{% endif %}" 
+                                       placeholder="Votre âge"
+                                       {% if user.age %}readonly disabled{% endif %}>
+                                {% if user.age %}
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Statut : {% if user.is_adult %}🔞 Adulte (18+){% else %}👶 Mineur{% endif %}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if user.age %}
+                            <!-- Message pour âge déjà défini -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-800 dark:text-blue-200">
+                                            <strong>Informations d'âge définies :</strong> Votre âge ({{ user.age }} ans) et votre statut {% if user.is_adult %}adulte{% else %}mineur{% endif %} sont maintenant enregistrés et ne peuvent plus être modifiés pour des raisons de sécurité.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Message pour âge à définir -->
+                            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                                            <strong>Information importante :</strong> Ces informations nous aident à adapter le contenu approprié à votre âge. 
+                                            Le statut adulte sera déterminé automatiquement selon votre âge (18 ans ou plus).
+                                            <br><br>
+                                            <strong>⚠️ Attention :</strong> Une fois votre âge sauvegardé, vous ne pourrez plus le modifier.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if not user.age %}
+                            <div class="flex justify-end">
+                                <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                    Sauvegarder définitivement
+                                </button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
                 <!-- Changement de mot de passe -->
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
@@ -173,35 +250,67 @@
                         Affichage des couvertures
                     </h3>
                     <div class="space-y-4">
-                        <div>
-                            <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                🔞 Voir les couvertures explicites
-                            </p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                                Afficher les couvertures de livres avec contenu mature/explicite (réservé aux adultes)
-                            </p>
-                            
-                            <div class="relative inline-block">
-                                <button type="button" id="mature-content-button" 
-                                        class="flex items-center justify-between w-48 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                                    <span id="mature-content-text">Non</span>
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
+                        {% if user.can_access_mature_content %}
+                            <!-- L'utilisateur a 16 ans ou plus, il peut choisir -->
+                            <form method="post" action="{% url 'update_mature_content' %}" class="space-y-4">
+                                {% csrf_token %}
+                                <div>
+                                    <p class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        🔞 Afficher les couvertures explicites
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                                        Afficher les couvertures de livres avec contenu mature/explicite
+                                    </p>
+                                    
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <input id="mature-yes" name="show_mature_content" type="radio" value="1" 
+                                                   {% if user.show_mature_content %}checked{% endif %}
+                                                   class="mangacollec-checkbox">
+                                            <label for="mature-yes" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                                Oui, afficher les couvertures explicites
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="mature-no" name="show_mature_content" type="radio" value="0"
+                                                   {% if not user.show_mature_content %}checked{% endif %}
+                                                   class="mangacollec-checkbox">
+                                            <label for="mature-no" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                                Non, masquer les couvertures explicites
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <div id="mature-content-dropdown" class="absolute z-10 w-48 mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg hidden">
-                                    <div class="py-1">
-                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="non">
-                                            Non
-                                        </button>
-                                        <button type="button" class="mature-option w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600" data-value="oui">
-                                            Oui
-                                        </button>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
+                                        Sauvegarder
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <!-- L'utilisateur a moins de 16 ans, accès bloqué -->
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                                            Accès restreint
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                                            <p>
+                                                Cette option est réservée aux utilisateurs de 16 ans ou plus. 
+                                                Veuillez mettre à jour vos informations d'âge dans la section "Informations d'âge" ci-dessus.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -212,65 +321,93 @@
                     <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
                         Préférences de contenu
                     </h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        Sélectionnez les types de contenu que vous ne souhaitez pas voir :
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        Sélectionnez les kinds et genres que vous aimez (vert) ou n'aimez pas (rouge) :
                     </p>
-                    <form method="post" action="#" class="space-y-4">
+                    
+                    <form method="post" action="/collection/update-preferences/" class="space-y-6">
                         {% csrf_token %}
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="violence" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Violence
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="horreur" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Horreur
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="ecchi" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Ecchi
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="yaoi" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Yaoi
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="yuri" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Yuri
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="drame" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Drame
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="mecha" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Mecha
-                                </span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer transition-colors">
-                                <input type="checkbox" name="exclude_tags" value="sport" class="sr-only peer">
-                                <span class="peer-checked:line-through peer-checked:text-red-600 dark:peer-checked:text-red-400">
-                                    #Sport
-                                </span>
-                            </label>
+                        
+                        <!-- Section Kinds -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-md font-medium text-gray-900 dark:text-white">📚 Types de contenu (Kinds)</h4>
+                                <div class="relative">
+                                    <input type="text" id="kind-search" placeholder="Rechercher et ajouter un type..." 
+                                           class="mangacollec-input form-input w-64 text-sm pl-8">
+                                    <svg class="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <!-- Dropdown résultats de recherche -->
+                                    <div id="kind-search-results" class="absolute z-20 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg hidden max-h-60 overflow-y-auto">
+                                        <!-- Les résultats apparaîtront ici -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="kinds-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 min-h-[50px]">
+                                <!-- Les kinds sélectionnés apparaîtront ici -->
+                            </div>
+                            
+                            <!-- Message si aucune préférence -->
+                            <div id="kinds-empty" class="text-center py-8 text-gray-500 dark:text-gray-400 hidden">
+                                <p>Aucune préférence de type de contenu définie.</p>
+                                <p class="text-sm mt-2">Utilisez la barre de recherche ci-dessus pour ajouter des types de contenu.</p>
+                            </div>
                         </div>
-                        <div class="flex justify-end">
-                            <button type="submit" class="mangacollec-red px-4 py-2 text-sm font-medium rounded-md">
-                                Sauvegarder les préférences
-                            </button>
+
+                        <!-- Section Genres -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-md font-medium text-gray-900 dark:text-white">🎭 Genres</h4>
+                                <div class="relative">
+                                    <input type="text" id="genre-search" placeholder="Rechercher et ajouter un genre..." 
+                                           class="mangacollec-input form-input w-64 text-sm pl-8">
+                                    <svg class="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <!-- Dropdown résultats de recherche -->
+                                    <div id="genre-search-results" class="absolute z-20 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg hidden max-h-60 overflow-y-auto">
+                                        <!-- Les résultats apparaîtront ici -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="genres-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 min-h-[50px]">
+                                <!-- Les genres sélectionnés apparaîtront ici -->
+                            </div>
+                            
+                            <!-- Message si aucune préférence -->
+                            <div id="genres-empty" class="text-center py-8 text-gray-500 dark:text-gray-400 hidden">
+                                <p>Aucune préférence de genre définie.</p>
+                                <p class="text-sm mt-2">Utilisez la barre de recherche ci-dessus pour ajouter des genres.</p>
+                            </div>
+                        </div>
+
+                        <!-- Légende -->
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Légende :</h5>
+                            <div class="flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center">
+                                    <span class="inline-block w-4 h-4 bg-green-100 border-2 border-green-500 rounded-full mr-2"></span>
+                                    <span class="text-gray-600 dark:text-gray-300">J'aime</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="inline-block w-4 h-4 bg-red-100 border-2 border-red-500 rounded-full mr-2"></span>
+                                    <span class="text-gray-600 dark:text-gray-300">Je n'aime pas</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="inline-block w-4 h-4 bg-gray-300 hover:bg-red-500 hover:text-white rounded-full mr-2 flex items-center justify-center text-xs">×</span>
+                                    <span class="text-gray-600 dark:text-gray-300">Supprimer</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Les préférences sont sauvegardées automatiquement -->
+                        <div class="text-center">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                💡 Vos préférences sont sauvegardées automatiquement
+                            </p>
                         </div>
                     </form>
                 </div>
@@ -349,56 +486,440 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Variables pour les conteneurs
+    const kindsContainer = document.getElementById('kinds-container');
+    const genresContainer = document.getElementById('genres-container');
+    const kindSearch = document.getElementById('kind-search');
+    const genreSearch = document.getElementById('genre-search');
+    const kindSearchResults = document.getElementById('kind-search-results');
+    const genreSearchResults = document.getElementById('genre-search-results');
+    const kindsEmpty = document.getElementById('kinds-empty');
+    const genresEmpty = document.getElementById('genres-empty');
+    
+    // Données récupérées depuis le backend
+    let kindsData = {{ kinds_data|default:"[]"|safe }};
+    let genresData = {{ genres_data|default:"[]"|safe }};
+    
+    // Variables pour gérer les timeouts de recherche
+    let kindSearchTimeout;
+    let genreSearchTimeout;
+    
+    // Fonction pour créer un tag avec bouton de suppression
+    function createTag(item, type) {
+        const preferenceClass = item.userPreference === true ? 'liked' : 
+                               item.userPreference === false ? 'disliked' : 'neutral';
+        
+        const tagHTML = `
+            <div class="preference-tag ${preferenceClass} inline-flex items-center px-3 py-2 rounded-full text-sm cursor-pointer transition-all duration-200 hover:shadow-md relative"
+                 data-id="${item.id}" data-type="${type}">
+                <span class="tag-title">#${item.title}</span>
+                <div class="preference-controls ml-2 flex space-x-1">
+                    <button type="button" class="like-btn w-4 h-4 rounded-full border-2 transition-colors" 
+                            data-preference="true" title="J'aime">
+                        <span class="sr-only">J'aime</span>
+                    </button>
+                    <button type="button" class="dislike-btn w-4 h-4 rounded-full border-2 transition-colors" 
+                            data-preference="false" title="Je n'aime pas">
+                        <span class="sr-only">Je n'aime pas</span>
+                    </button>
+                    <button type="button" class="remove-btn ml-2 w-4 h-4 rounded-full bg-gray-300 hover:bg-red-500 hover:text-white text-gray-600 text-xs flex items-center justify-center transition-colors" 
+                            title="Supprimer">
+                        ×
+                    </button>
+                </div>
+                <input type="hidden" name="${type}_preference_${item.id}" value="${item.userPreference}">
+            </div>
+        `;
+        
+        return tagHTML;
+    }
+    
+    // Fonction pour afficher un résultat de recherche
+    function createSearchResult(item, type) {
+        const resultHTML = `
+            <div class="search-result-item px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0"
+                 data-id="${item.id}" data-type="${item.type}" data-title="${item.title}">
+                <span class="text-sm text-gray-700 dark:text-gray-300">#${item.title}</span>
+            </div>
+        `;
+        return resultHTML;
+    }
+    
+    // Fonction pour mettre à jour l'affichage des conteneurs vides
+    function updateEmptyStates() {
+        if (kindsContainer.children.length === 0) {
+            kindsEmpty.classList.remove('hidden');
+        } else {
+            kindsEmpty.classList.add('hidden');
+        }
+        
+        if (genresContainer.children.length === 0) {
+            genresEmpty.classList.remove('hidden');
+        } else {
+            genresEmpty.classList.add('hidden');
+        }
+    }
+    
+    // Fonction pour ajouter un tag à un conteneur
+    function addTagToContainer(item, type) {
+        const container = type === 'kind' ? kindsContainer : genresContainer;
+        const tagElement = document.createElement('div');
+        tagElement.innerHTML = createTag(item, type);
+        container.appendChild(tagElement.firstElementChild);
+        updateEmptyStates();
+    }
+    
+    // Fonction pour supprimer un tag
+    function removeTag(tagElement) {
+        const contentId = tagElement.getAttribute('data-id');
+        const contentType = tagElement.getAttribute('data-type');
+        
+        // Appel AJAX pour supprimer la préférence
+        fetch("/collection/add-preference/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `content_id=${contentId}&content_type=${contentType}&preference=null`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                tagElement.remove();
+                updateEmptyStates();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    // Fonction pour changer la préférence d'un tag
+    function updateTagPreference(tagElement, preference) {
+        const contentId = tagElement.getAttribute('data-id');
+        const contentType = tagElement.getAttribute('data-type');
+        
+        // Appel AJAX pour mettre à jour la préférence
+        fetch("/collection/add-preference/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `content_id=${contentId}&content_type=${contentType}&preference=${preference}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mettre à jour l'apparence du tag
+                tagElement.classList.remove('liked', 'disliked', 'neutral');
+                
+                if (preference === 'true') {
+                    tagElement.classList.add('liked');
+                } else if (preference === 'false') {
+                    tagElement.classList.add('disliked');
+                } else {
+                    tagElement.classList.add('neutral');
+                }
+                
+                // Mettre à jour le champ caché
+                const hiddenInput = tagElement.querySelector('input[type="hidden"]');
+                hiddenInput.value = preference;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    // Fonction pour effectuer une recherche AJAX
+    function performSearch(searchTerm, type, resultsContainer) {
+        if (searchTerm.length < 2) {
+            resultsContainer.classList.add('hidden');
+            return;
+        }
+        
+        fetch(`/collection/search-content/?q=${encodeURIComponent(searchTerm)}&type=${type}`)
+        .then(response => response.json())
+        .then(data => {
+            resultsContainer.innerHTML = '';
+            
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(item => {
+                    resultsContainer.innerHTML += createSearchResult(item, type);
+                });
+                resultsContainer.classList.remove('hidden');
+            } else {
+                resultsContainer.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Aucun résultat trouvé</div>';
+                resultsContainer.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            resultsContainer.classList.add('hidden');
+        });
+    }
+    
+    // Charger les données initiales
+    kindsData.forEach(kind => {
+        addTagToContainer(kind, 'kind');
+    });
+    
+    genresData.forEach(genre => {
+        addTagToContainer(genre, 'genre');
+    });
+    
+    updateEmptyStates();
+    
+    // Gestion des événements de recherche pour kinds
+    kindSearch.addEventListener('input', function() {
+        clearTimeout(kindSearchTimeout);
+        const searchTerm = this.value.trim();
+        
+        kindSearchTimeout = setTimeout(() => {
+            performSearch(searchTerm, 'kind', kindSearchResults);
+        }, 300);
+    });
+    
+    // Gestion des événements de recherche pour genres
+    genreSearch.addEventListener('input', function() {
+        clearTimeout(genreSearchTimeout);
+        const searchTerm = this.value.trim();
+        
+        genreSearchTimeout = setTimeout(() => {
+            performSearch(searchTerm, 'genre', genreSearchResults);
+        }, 300);
+    });
+    
+    // Gérer les clics sur les résultats de recherche
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.search-result-item')) {
+            const resultItem = e.target.closest('.search-result-item');
+            const contentId = resultItem.getAttribute('data-id');
+            const contentType = resultItem.getAttribute('data-type');
+            const title = resultItem.getAttribute('data-title');
+            
+            // Ajouter avec préférence "j'aime" par défaut
+            fetch("/collection/add-preference/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: `content_id=${contentId}&content_type=${contentType}&preference=true`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addTagToContainer(data.item, contentType);
+                    
+                    // Vider la recherche et cacher les résultats
+                    if (contentType === 'kind') {
+                        kindSearch.value = '';
+                        kindSearchResults.classList.add('hidden');
+                    } else {
+                        genreSearch.value = '';
+                        genreSearchResults.classList.add('hidden');
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+    
+    // Gérer les clics sur les boutons de préférence et suppression
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.like-btn, .dislike-btn')) {
+            e.preventDefault();
+            const button = e.target;
+            const tag = button.closest('.preference-tag');
+            const preference = button.getAttribute('data-preference');
+            
+            updateTagPreference(tag, preference);
+        }
+        
+        if (e.target.matches('.remove-btn')) {
+            e.preventDefault();
+            const tag = e.target.closest('.preference-tag');
+            removeTag(tag);
+        }
+    });
+    
+    // Fermer les dropdowns en cliquant ailleurs
+    document.addEventListener('click', function(e) {
+        if (!kindSearch.contains(e.target) && !kindSearchResults.contains(e.target)) {
+            kindSearchResults.classList.add('hidden');
+        }
+        if (!genreSearch.contains(e.target) && !genreSearchResults.contains(e.target)) {
+            genreSearchResults.classList.add('hidden');
+        }
+    });
+    
+    // Confirmation avant soumission pour âge non encore défini
+    const ageInput = document.getElementById('age');
+    
+    if (ageInput && !ageInput.disabled) {
+        const ageForm = ageInput.closest('form');
+        if (ageForm) {
+            ageForm.addEventListener('submit', function(e) {
+                const age = parseInt(ageInput.value);
+                if (age && !confirm(
+                    `⚠️ CONFIRMATION IMPORTANTE ⚠️\n\n` +
+                    `Vous allez définir votre âge à ${age} ans.\n\n` +
+                    `ATTENTION: Cette information ne pourra PLUS JAMAIS être modifiée pour des raisons de sécurité.\n\n` +
+                    `Le statut adulte sera déterminé automatiquement selon votre âge.\n\n` +
+                    `Êtes-vous absolument certain(e) de votre âge ?`
+                )) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
+    
+    // Mature content dropdown (code existant)
     const matureContentButton = document.getElementById('mature-content-button');
     const matureContentDropdown = document.getElementById('mature-content-dropdown');
     const matureContentText = document.getElementById('mature-content-text');
     const matureOptions = document.querySelectorAll('.mature-option');
     
-    // Toggle dropdown
-    matureContentButton.addEventListener('click', function() {
-        matureContentDropdown.classList.toggle('hidden');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!matureContentButton.contains(event.target) && !matureContentDropdown.contains(event.target)) {
-            matureContentDropdown.classList.add('hidden');
-        }
-    });
-    
-    // Handle option selection
-    matureOptions.forEach(function(option) {
-        option.addEventListener('click', function() {
-            const value = this.getAttribute('data-value');
-            
-            if (value === 'oui') {
-                // Confirmation d'âge
-                const ageConfirmation = confirm(
-                    "⚠️ CONFIRMATION D'ÂGE REQUISE ⚠️\n\n" +
-                    "En cliquant sur 'OK', vous confirmez :\n" +
-                    "• Avoir 18 ans ou plus\n" +
-                    "• Souhaiter voir les couvertures de livres explicites\n" +
-                    "• Comprendre que certaines couvertures peuvent contenir du contenu mature\n\n" +
-                    "Confirmez-vous avoir 18 ans ou plus ?"
-                );
-                
-                if (ageConfirmation) {
-                    matureContentText.textContent = 'Oui';
-                    // Ici vous pouvez ajouter le code pour sauvegarder la préférence
-                    console.log('Couvertures explicites activées');
-                } else {
-                    return; // Ne pas changer la sélection
-                }
-            } else {
-                matureContentText.textContent = 'Non';
-                // Ici vous pouvez ajouter le code pour sauvegarder la préférence
-                console.log('Couvertures explicites désactivées');
-            }
-            
-            matureContentDropdown.classList.add('hidden');
+    if (matureContentButton) {
+        // Toggle dropdown
+        matureContentButton.addEventListener('click', function() {
+            matureContentDropdown.classList.toggle('hidden');
         });
-    });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!matureContentButton.contains(event.target) && !matureContentDropdown.contains(event.target)) {
+                matureContentDropdown.classList.add('hidden');
+            }
+        });
+        
+        // Handle option selection
+        matureOptions.forEach(function(option) {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                
+                if (value === 'oui') {
+                    // Confirmation d'âge
+                    const ageConfirmation = confirm(
+                        "⚠️ CONFIRMATION D'ÂGE REQUISE ⚠️\n\n" +
+                        "En cliquant sur 'OK', vous confirmez :\n" +
+                        "• Avoir 18 ans ou plus\n" +
+                        "• Souhaiter voir les couvertures de livres explicites\n" +
+                        "• Comprendre que certaines couvertures peuvent contenir du contenu mature\n\n" +
+                        "Confirmez-vous avoir 18 ans ou plus ?"
+                    );
+                    
+                    if (ageConfirmation) {
+                        matureContentText.textContent = 'Oui';
+                        console.log('Couvertures explicites activées');
+                    } else {
+                        return; // Ne pas changer la sélection
+                    }
+                } else {
+                    matureContentText.textContent = 'Non';
+                    console.log('Couvertures explicites désactivées');
+                }
+                
+                matureContentDropdown.classList.add('hidden');
+            });
+        });
+    }
 });
 </script>
+
+<style>
+/* Styles pour les tags de préférence */
+.preference-tag {
+    background-color: #f3f4f6;
+    border: 2px solid #e5e7eb;
+}
+
+.preference-tag.liked {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.preference-tag.disliked {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.preference-tag.neutral {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+/* Styles pour les boutons de préférence */
+.like-btn {
+    background-color: #f0f9f0;
+    border-color: #22c55e !important;
+}
+
+.dislike-btn {
+    background-color: #fef2f2;
+    border-color: #ef4444 !important;
+}
+
+.neutral-btn {
+    background-color: #f9fafb;
+    border-color: #9ca3af !important;
+}
+
+/* États actifs */
+.preference-tag.liked .like-btn {
+    background-color: #22c55e;
+}
+
+.preference-tag.disliked .dislike-btn {
+    background-color: #ef4444;
+}
+
+/* Bouton de suppression */
+.remove-btn {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.remove-btn:hover {
+    background-color: #ef4444 !important;
+    color: white !important;
+}
+
+/* Dropdown de recherche */
+.search-result-item:hover {
+    background-color: #f3f4f6;
+}
+
+.dark .search-result-item:hover {
+    background-color: #4b5563;
+}
+
+/* Mode sombre */
+.dark .preference-tag {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+.dark .preference-tag.liked {
+    background-color: #166534;
+    border-color: #22c55e;
+    color: #dcfce7;
+}
+
+.dark .preference-tag.disliked {
+    background-color: #991b1b;
+    border-color: #ef4444;
+    color: #fee2e2;
+}
+
+.dark .preference-tag.neutral {
+    background-color: #4b5563;
+    border-color: #6b7280;
+    color: #d1d5db;
+}
+</style>
 
 {% endblock %}
