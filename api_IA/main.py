@@ -1,4 +1,5 @@
 from routes.predict import router as predict_router
+from routes.test import router as test_router
 from fastapi import FastAPI
 from azure.identity import DefaultAzureCredential, AzureCliCredential
 from azure.ai.ml import MLClient
@@ -7,6 +8,7 @@ from azure.keyvault.secrets import SecretClient
 
 app = FastAPI()
 app.include_router(predict_router)
+app.include_router(test_router)
 
 # Choix du credential
 try:
