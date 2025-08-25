@@ -6,4 +6,6 @@ router = APIRouter()
 @router.get("/predict")
 def get_prediction():
     print("Requête reçue dans FastAPI")
-    return JSONResponse(content={"prediction": "résultat fictif"})
+    return JSONResponse(content={"prediction": "résultat fictif  depuis django"})
+
+

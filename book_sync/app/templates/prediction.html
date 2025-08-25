@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Prédiction - BookSync{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Titre principal -->
+    <div class="mb-8">
+        <div class="flex items-center space-x-3 mb-2">
+            <div class="p-2 bg-red-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.69 2 6 4.69 6 8v1c0 .55-.45 1-1 1s-1-.45-1-1V8C4 3.58 7.58 0 12 0s8 3.58 8 8v1c0 .55-.45 1-1 1s-1-.45-1-1V8c0-3.31-2.69-6-6-6z"/>
+                    <path d="M18 10H6c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2z"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Prédiction de votre prochaine lecture</h1>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">
+            Pour générer une prédiction personnalisée, nous avons besoin de quelques informations. Ces données seront croisées avec votre historique de lecture et votre collection.
+        </p>
+    </div>
+
+    <!-- Formulaire interactif -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+        <!-- Question 1 : Âge -->
+        <div id="step-age">
+            <label for="user_age" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Quel est votre âge ?</label>
+            <input type="number" id="user_age" name="user_age" min="1" max="100" required
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white">
+            <button onclick="nextStep('step-gender')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
+        </div>
+
+        <!-- Question 2 : Genre -->
+        <div id="step-gender" class="hidden">
+            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quel est votre genre ?</p>
+            <div class="grid grid-cols-3 gap-4">
+                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Homme</button>
+                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Femme</button>
+                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Non binaire</button>
+            </div>
+        </div>
+
+        <!-- Question 3 : Genres préférés (1-3 max) -->
+        <div id="step-genre-preference" class="hidden">
+            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                Quels sont vos genres de préférence ? (1 à 3 maximum)
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for genre in genres %}
+                    <button class="genre-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                            data-genre-id="{{ genre.id }}" data-genre-title="{{ genre.title }}">
+                        {{ genre.title }}
+                    </button>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <span id="genre-count">0</span>/3 genres sélectionnés
+            </div>
+            <button id="validate-genre-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Valider mes choix
+            </button>
+        </div>
+
+        <!-- Question 4 : Catégories préférées (1-5 max) -->
+        <div id="step-category-preference" class="hidden">
+            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                Quelles sont vos catégories de préférence ? (1 à 5 maximum)
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for kind in kinds %}
+                    <button class="kind-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                            data-kind-id="{{ kind.id }}" data-kind-title="{{ kind.title }}">
+                        {{ kind.title }}
+                    </button>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <span id="kind-count">0</span>/5 catégories sélectionnées
+            </div>
+            <button id="validate-category-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Valider mes choix
+            </button>
+        </div>
+
+        <!-- Question finale : libre -->
+        <div id="step-final" class="hidden">
+            <label for="user_comment" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Une dernière chose à nous dire ?</label>
+            <textarea id="user_comment" name="user_comment" rows="5" maxlength="500"
+                      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white"
+                      placeholder="Exprimez vos attentes ou envies..."></textarea>
+            <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Envoyer</button>
+        </div>
+
+        <!-- Récapitulatif dynamique -->
+        <div id="recap-section" class="mt-8 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Vos réponses</h2>
+            <div id="recap-list" class="space-y-2">
+                <!-- Réponses dynamiques -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chargement du script JS externe -->
+<script src="{% static 'js/prediction.js' %}"></script>
+{% endblock %}
+
