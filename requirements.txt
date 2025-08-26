@@ -9,3 +9,5 @@ azure-identity
 azure-ai-ml
 azure-storage-blob
 azure-keyvault-secrets
+pandas
+psycopg2
