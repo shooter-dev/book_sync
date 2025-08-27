@@ -4,7 +4,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path("search/", views.search, name="search"),
-    path("home/", views.collection, name="collection"),
     path("serie/<uuid:serie_id>/", views.serie_detail, name="serie_detail"),
     path("volume/<uuid:volume_id>/", views.volume_detail, name="volume_detail"),
     path('add/<uuid:volume_id>/', views.add_collection, name='add_collection'),
@@ -13,4 +12,5 @@ urlpatterns = [
     path('update-preferences/', views.update_preferences, name='update_preferences'),
     path('search-content/', views.search_content, name='search_content'),
     path('add-preference/', views.add_preference, name='add_preference'),
+    path("", views.collection, name="collection"),
 ]

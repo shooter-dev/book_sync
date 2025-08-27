@@ -13,6 +13,8 @@ from .services import VolumeService, CollectionService
 
 @login_required
 def collection(request):
+    # Debug: Afficher l'utilisateur connecté
+    
     # Récupérer les possessions de l'utilisateur
     possessions = Possession.objects.filter(user=request.user).select_related('volume__serie__genre', 'volume__serie__publisher')
     
@@ -40,6 +42,8 @@ def collection(request):
         'en_cours': 0,  # À implémenter plus tard
         'favoris': 0,  # À implémenter plus tard
     }
+
+    print(context)
     
     return render(request, 'collection.html', context)
   
