@@ -1,15 +1,19 @@
 import os
-from typing import Collection
-
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 import requests
 import json
 from django.http import JsonResponse
 from dotenv import load_dotenv
-from collection.models import Genre, Kind, Possession
+from collection.models import Genre, Kind,Possession, Read
+from typing import Collection
+
 
 load_dotenv()
+
+def is_premium(user):
+    """Vérifie si l'utilisateur a un abonnement premium"""
+    return user.is_premium
 
 def index(request):
     return render(request, 'index.html')
@@ -22,6 +26,7 @@ def recommendation(request):
     return render(request, 'recommendation.html')
 
 @login_required
+@user_passes_test(is_premium, login_url='/accounts/subscribe/')
 def prediction(request):
     user_age = getattr(request.user, 'age', None)
     genres = Genre.objects.filter(to_display=True)
@@ -30,8 +35,6 @@ def prediction(request):
         'user_age': user_age,
         'genres': genres,
         'kinds': kinds,
-        # 'collection_json': json.dumps(user_data['collection']),
-        # 'read_json': json.dumps(user_data['read']),
     }
     return render(request, 'prediction.html', context)
 
