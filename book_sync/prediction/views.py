@@ -3,30 +3,111 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import requests
-from collection.models import Kind
+from collection.models import Kind, Possession
 from collection.models import like_kind, like_genre
+from lecture.models import Read
+import json
 
+def get_possessions(user_id):
+    result=Read.objects.filter(user_id=user_id).select_related("volume__serie")
+    return result
 
+def get_reads(user_id):
+    result=Read.objects.filter(user_id=user_id).select_related("volume__serie")
+    return result
+
+def format_data(entries):
+    result = {}
+    for entry in entries:
+        serie = entry.volume.serie.title
+        vol_num = str(entry.volume.number)
+        vol_id = str(entry.volume.id)
+
+        if serie not in result:
+            result[serie] = {
+                "volumes": {},
+                "id_series": str(entry.volume.serie.id)
+            }
+
+        # 🔄 inversion : ID devient clé, numéro devient valeur
+        result[serie]["volumes"][vol_id] = vol_num
+
+    return result
+
+@login_required
 def prediction_view(request):
-    try:
-        payload = {
-            "user_age": int(request.GET.get("user_age", 0)),
-            "user_genre": request.GET.get("user_genre", ""),
-            "genre_preference": request.GET.get("genre_preference", ""),
-            "category_preference": request.GET.get("category_preference", ""),
-            "user_comment": request.GET.get("user_comment", ""),
-            "prediction_type": request.GET.get("prediction_type", "")
-        }
+    user_id = request.user.id
 
-        response = requests.post(
-            f"{os.environ.get('URL_API_PREDICTION')}/predict",
-            json=payload
-        )
-        data = response.json()
+    possessions = get_possessions(user_id)
+    reads = get_reads(user_id)
 
-        return JsonResponse({"prediction": data.get("data")})
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    collection_data = format_data(possessions)
+    read_data = format_data(reads)
+
+    context = {
+        "collection_json": json.dumps(collection_data),
+        "read_json": json.dumps(read_data),
+        # tu peux ajouter d'autres champs si besoin
+    }
+
+    return render(request, "prediction.html", context)
+
+# def prediction_view(request):
+#     """
+#     Vue alternative si tu veux utiliser l'endpoint /predict-form/ de FastAPI
+#     """
+#     try:
+#         user_id = request.user.id
+#         api_url = f"{os.environ.get('URL_API_PREDICTION', 'http://localhost:8001')}/predict/"
+#         # Même récupération des données
+#         possessions = get_possessions(user_id)
+#         reads = get_reads(user_id)
+#
+#         collection_data = format_data(possessions)
+#         read_data = format_data(reads)
+#
+#         # ✅ Préparation des données pour FormData
+#         form_data = {
+#             'user_age': request.POST.get("user_age", "0"),
+#             'user_genre': request.POST.get("user_genre", ""),
+#             'genre_preference': request.POST.get("genre_preference", ""),
+#             'category_preference': request.POST.get("category_preference", ""),
+#             'user_comment': request.POST.get("user_comment", ""),
+#             'prediction_type': request.POST.get("prediction_type", ""),
+#             'collection': json.dumps(collection_data),  # ✅ JSON en string
+#             'read': json.dumps(read_data)  # ✅ JSON en string
+#         }
+#
+#         print(f"🚀 Envoi FormData vers FastAPI: {form_data}")
+#
+#         # ✅ Envoi en form-data
+#         response = requests.post(
+#             f"{os.environ.get('URL_API_PREDICTION', 'http://localhost:8001')}/predict/",
+#             data=form_data,  # ✅ data=form_data pour form-encoded
+#             timeout=30
+#         )
+#
+#         if response.status_code == 200:
+#             data = response.json()
+#             return JsonResponse({
+#                 "status": "success",
+#                 "message": "Prédiction générée avec succès (FormData)",
+#                 "data": data
+#             })
+#         else:
+#             return JsonResponse({
+#                 "status": "error",
+#                 "message": f"Erreur API: {response.status_code}",
+#                 "details": response.text
+#             }, status=response.status_code)
+#
+#     except Exception as e:
+#         print(f"❌ Erreur: {str(e)}")
+#         return JsonResponse({
+#             "status": "error",
+#             "message": "Erreur lors de la prédiction",
+#             "details": str(e)
+#         }, status=500)
 
 
 @login_required

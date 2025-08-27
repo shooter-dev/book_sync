@@ -11,3 +11,6 @@ azure-storage-blob
 azure-keyvault-secrets
 pandas
 psycopg2
+
+#fastapi
+python-multipart

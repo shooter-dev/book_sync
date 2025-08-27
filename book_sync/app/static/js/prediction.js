@@ -12,6 +12,8 @@ function nextStep(nextId) {
     const target = document.getElementById(nextId);
     if (target) target.classList.remove('hidden');
 
+    syncHiddenFields();
+
     if (nextId === 'step-genre-preference') {
         syncSelectionStyles('genre');
     } else if (nextId === 'step-category-preference') {
@@ -21,6 +23,8 @@ function nextStep(nextId) {
     } else if (nextId === 'step-final') {
         const textarea = document.getElementById('user_comment');
         if (textarea) textarea.value = responses.user_comment || '';
+    } else if (nextId === 'step-comment') {
+        updateRecap(); // ✅ affiche le récapitulatif dynamique
     }
 }
 
@@ -254,46 +258,100 @@ document.addEventListener("DOMContentLoaded", () => {
             updateRecap();
         });
     }
+
+    // ✅ CORRECTION : Récupération des données Django existantes
+    const collectionInput = document.getElementById("user_collection");
+    const readInput = document.getElementById("prediction_read");
+
+    console.log("Collection input value:", collectionInput ? collectionInput.value : "N/A");
+    console.log("Read input value:", readInput ? readInput.value : "N/A");
 });
 
+// ✅ FONCTION CORRIGÉE : syncHiddenFields
+function syncHiddenFields() {
+    // Mise à jour des champs de formulaire
+    document.getElementById("user_age_hidden").value = responses.user_age || "";
+    document.getElementById("user_genre_hidden").value = responses.user_genre || "";
+    document.getElementById("genre_preference_hidden").value = responses.user_genre_preference.join(",") || "";
+    document.getElementById("category_preference_hidden").value = responses.user_category_preference.join(",") || "";
+    document.getElementById("user_comment_hidden").value = responses.user_comment || "";
+    document.getElementById("prediction_type_hidden").value = responses.prediction_type || "";
 
 
-function submitToFastAPI() {
-const rawCollection = document.getElementById("collection_data").value;
-let collection = {};
 
-if (rawCollection && rawCollection.trim() !== "") {
-  try {
-    collection = JSON.parse(rawCollection);
-  } catch (e) {
-    console.error("❌ Erreur de parsing JSON:", e);
-  }
-} else {
-  console.warn("⚠️ Le champ collection_data est vide");
+    console.log("Champs cachés synchronisés:", {
+        age: responses.user_age,
+        genre: responses.user_genre,
+        genre_pref: responses.user_genre_preference,
+        category_pref: responses.user_category_preference,
+        comment: responses.user_comment,
+        prediction_type: responses.prediction_type
+    });
 }
 
-//console.log(JSON.parse(document.getElementById("read_data").value))
-console.log(JSON.parse(document.getElementById("collection_data").value))
+// ✅ FONCTION DE DEBUG pour vérifier les données
+function debugFormData() {
+    const formData = new FormData(document.getElementById('prediction-form'));
 
-const payload = {
-  user_age: parseInt(responses.user_age),
-  user_genre: responses.user_genre,
-  genre_preference: responses.user_genre_preference.join(","),
-  category_preference: responses.user_category_preference.join(","),
-  user_comment: responses.user_comment,
-  prediction_type: responses.prediction_type,
-  user_id: document.getElementById("user_id").value,
-  //collection : JSON.parse(document.getElementById("collection_data").value),
-  read : JSON.parse(document.getElementById("read_data").value)
-};
+    console.log("=== DONNÉES DU FORMULAIRE ===");
+    for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+    }
 
-console.log("📦 Collection :", collection);
-console.log("📖 Read :", read);
+    // Vérification spéciale des données JSON
+    const collectionValue = formData.get('collection');
+    const readValue = formData.get('read');
 
-const queryString = Object.entries(payload)
-  .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-  .join("&");
+    if (collectionValue) {
+        try {
+            const collectionData = JSON.parse(collectionValue);
+            console.log("Collection parsée:", collectionData);
+        } catch (e) {
+            console.error("Erreur parsing collection:", e);
+        }
+    }
 
-//window.location.href = `http://127.0.0.1:8001/predict/result?${queryString}`
+    if (readValue) {
+        try {
+            const readData = JSON.parse(readValue);
+            console.log("Read parsée:", readData);
+        } catch (e) {
+            console.error("Erreur parsing read:", e);
+        }
+    }
 }
 
+// Ajout d'un bouton de debug (optionnel, pour tes tests)
+document.addEventListener("DOMContentLoaded", () => {
+    // Ajouter un bouton de debug en bas de page
+    const debugBtn = document.createElement('button');
+    debugBtn.textContent = '🐛 Debug Form Data';
+    debugBtn.type = 'button';
+    debugBtn.className = 'fixed bottom-4 right-4 bg-yellow-500 text-black px-4 py-2 rounded shadow-lg hover:bg-yellow-600';
+    debugBtn.onclick = debugFormData;
+    document.body.appendChild(debugBtn);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const initialCollection = JSON.parse(document.getElementById('collection-data').textContent);
+    const initialRead = JSON.parse(document.getElementById('read-data').textContent);
+
+    const collectionInput = document.getElementById("user_collection");
+    const readInput = document.getElementById("prediction_read");
+
+    if (collectionInput) collectionInput.value = JSON.stringify(initialCollection);
+    if (readInput) readInput.value = JSON.stringify(initialRead);
+
+    console.log("Collection initiale injectée:", collectionInput.value);
+    console.log("Read initial injecté:", readInput.value);
+});
+
+document.getElementById("prediction-form").addEventListener("submit", function() {
+    syncHiddenFields(); // met à jour les autres champs dynamiques
+
+    // Collection et Read restent injectés
+    console.log("🚀 FormData prêt à envoyer :", {
+        collection: document.getElementById("user_collection").value,
+        read: document.getElementById("prediction_read").value
+    });
+});

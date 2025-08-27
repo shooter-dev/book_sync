@@ -22,107 +22,124 @@
     </div>
 
     <!-- Formulaire interactif -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
-        <!-- Question 1 : Âge -->
-        <div id="step-age">
-            <label for="user_age" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Quel est votre âge ?</label>
-            <input type="number" id="user_age" name="user_age" value="{{user.age}}"
-                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white">
-            <button onclick="nextStep('step-gender')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
-        </div>
+    <form id="prediction-form" method="POST" action="http://127.0.0.1:8001/predict/" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
 
-        <!-- Question 2 : Genre -->
-        <div id="step-gender" class="hidden">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quel est votre genre ?</p>
-            <div class="grid grid-cols-3 gap-4">
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Homme</button>
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Femme</button>
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Non binaire</button>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+            <!-- Question 1 : Âge -->
+            <div id="step-age">
+                <label for="user_age" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Quel est votre âge ?</label>
+                <input type="number" id="user_age" value="{{user.age}}"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white">
+                <button onclick="nextStep('step-gender')" type="button" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
             </div>
-        </div>
 
-        <!-- Question 3 : Genres préférés (1-3 max) -->
-        <div id="step-genre-preference" class="hidden">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                Quels sont vos genres de préférence ? (1 à 3 maximum)
-            </p>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {% for genre in genres %}
-                    <button class="genre-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
-                            data-genre-id="{{ genre.id }}" data-genre-title="{{ genre.title }}">
-                        {{ genre.title }}
-                    </button>
-                {% endfor %}
+            <!-- Question 2 : Genre -->
+            <div id="step-gender" class="hidden">
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quel est votre genre ?</p>
+                <div class="grid grid-cols-3 gap-4">
+                    <button type="button" class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Homme</button>
+                    <button type="button" class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Femme</button>
+                    <button type="button" class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Non binaire</button>
+                </div>
             </div>
-            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                <span id="genre-count">0</span>/3 genres sélectionnés
-            </div>
-            <button id="validate-genre-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Valider mes choix
-            </button>
-        </div>
 
-        <!-- Question 4 : Catégories préférées (1-5 max) -->
-        <div id="step-category-preference" class="hidden">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                Quelles sont vos catégories de préférence ? (1 à 5 maximum)
-            </p>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {% for kind in kinds %}
-                    <button class="kind-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
-                            data-kind-id="{{ kind.id }}" data-kind-title="{{ kind.title }}">
-                        {{ kind.title }}
-                    </button>
-                {% endfor %}
-            </div>
-            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                <span id="kind-count">0</span>/5 catégories sélectionnées
-            </div>
-            <button id="validate-category-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Valider mes choix
-            </button>
-        </div>
-
-        <!-- Nouvelle question : type de prédiction -->
-        <div id="step-prediction-type" class="hidden">
-            <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                Voulez-vous une prédiction sur les livres ?
-            </p>
-            <div class="grid grid-cols-2 gap-4">
-                <button class="prediction-type-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
-                        data-type="collection">
-                    Collection
-                </button>
-                <button class="prediction-type-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
-                        data-type="proposition">
-                    Proposition de découverte
+            <!-- Question 3 : Genres préférés (1-3 max) -->
+            <div id="step-genre-preference" class="hidden">
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Quels sont vos genres de préférence ? (1 à 3 maximum)
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {% for genre in genres %}
+                        <button type="button" class="genre-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                                data-genre-id="{{ genre.id }}" data-genre-title="{{ genre.title }}">
+                            {{ genre.title }}
+                        </button>
+                    {% endfor %}
+                </div>
+                <div type="button" class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    <span id="genre-count">0</span>/3 genres sélectionnés
+                </div>
+                <button type="button" id="validate-genre-btn" type="button" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Valider mes choix
                 </button>
             </div>
-        </div>
 
-        <!-- Question finale : libre -->
-        <div id="step-final" class="hidden">
-            <label for="user_comment" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Une dernière chose à nous dire ?</label>
-            <textarea id="user_comment" name="user_comment" rows="5" maxlength="500"
-                      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white"
-                      placeholder="Exprimez vos attentes ou envies..."></textarea>
-            <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition" onclick="submitToFastAPI()">Envoyer</button>
-        </div>
+            <!-- Question 4 : Catégories préférées (1-5 max) -->
+            <div id="step-category-preference" class="hidden">
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Quelles sont vos catégories de préférence ? (1 à 5 maximum)
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {% for kind in kinds %}
+                        <button type="button" class="kind-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                                data-kind-id="{{ kind.id }}" data-kind-title="{{ kind.title }}">
+                            {{ kind.title }}
+                        </button>
+                    {% endfor %}
+                </div>
+                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    <span id="kind-count">0</span>/5 catégories sélectionnées
+                </div>
+                <button id="validate-category-btn" type="button" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Valider mes choix
+                </button>
+            </div>
 
-        <!-- Récapitulatif dynamique -->
-        <div id="recap-section" class="mt-8 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Vos réponses</h2>
-            <div id="recap-list" class="space-y-2">
-                <!-- Réponses dynamiques -->
+            <!-- Nouvelle question : type de prédiction -->
+            <div id="step-prediction-type" class="hidden">
+                <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Voulez-vous une prédiction sur les livres ?
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button type="button" class="prediction-type-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                            data-type="collection">
+                        Collection
+                    </button>
+                    <button type="button" class="prediction-type-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
+                            data-type="proposition">
+                        Proposition de découverte
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question finale : libre -->
+            <div id="step-final" class="hidden">
+                <label for="user_comment" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Une dernière chose à nous dire ?</label>
+                <textarea id="user_comment" rows="5" maxlength="500"
+                          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white"
+                          placeholder="Exprimez vos attentes ou envies..."></textarea>
+                <button onclick="nextStep('step-comment')" type="button" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Envoyer</button>
+            </div>
+
+            <!-- Récapitulatif dynamique -->
+            <div id="recap-section" class="mt-8 space-y-4">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Vos réponses</h2>
+                <div id="recap-list" class="space-y-2">
+                    <!-- Réponses dynamiques -->
+                </div>
             </div>
         </div>
-    </div>
-    <input type="hidden" id="user_id" value="{{ request.user.id }}">
-    <p id="collection_data" style="display:none;">{{ collection_json|safe }}</p>
-    <p id="read_data" style="display:none;">{{ read_json|safe }}
-
+        <!-- Bouton final d'envoi -->
+        <input type="hidden" name="user_age" id="user_age_hidden">
+        <input type="hidden" name="user_genre" id="user_genre_hidden">
+        <input type="hidden" name="genre_preference" id="genre_preference_hidden">
+        <input type="hidden" name="category_preference" id="category_preference_hidden">
+        <input type="hidden" name="user_comment" id="user_comment_hidden">
+        <input type="hidden" name="prediction_type" id="prediction_type_hidden">
+        <input type="hidden" name="collection" id="user_collection">
+        <input type="hidden" name="read" id="prediction_read">
+        <div class="text-center mt-6">
+          <button  class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+             Envoyer ma prédiction
+          </button>
+        </div>
+    </form>
 </div>
 
 <!-- Chargement du script JS externe -->
 <script src="{% static 'js/prediction.js' %}"></script>
 {% endblock %}
+<script>
+    {{ collection_json|json_script:"collection-data" }}
+    {{ read_json|json_script:"read-data" }}
+</script>

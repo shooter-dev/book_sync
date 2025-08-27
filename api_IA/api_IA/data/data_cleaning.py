@@ -83,4 +83,3 @@ for row in rows:
 
 def get_volumes_datas():
     return volumes_datas
-
