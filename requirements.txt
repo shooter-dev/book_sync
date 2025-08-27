@@ -11,3 +11,8 @@ azure-storage-blob
 azure-keyvault-secrets
 pandas
 psycopg2
+langchain
+openai
+faiss-cpu
+tiktoken
+python-dotenv
