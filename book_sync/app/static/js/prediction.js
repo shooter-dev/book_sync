@@ -4,7 +4,8 @@ const responses = {
     user_genre_preference: [],
     user_category_preference: [],
     user_comment: null,
-    prediction_type: null
+    prediction_type: null,
+    user_mood: null,
 };
 
 function nextStep(nextId) {
@@ -13,12 +14,29 @@ function nextStep(nextId) {
     if (target) target.classList.remove('hidden');
 
     if (nextId === 'step-genre-preference') {
-        syncSelectionStyles('genre');
-    } else if (nextId === 'step-category-preference') {
-        syncSelectionStyles('kind');
-    } else if (nextId === 'step-prediction-type') {
-        // aucune action spécifique pour le moment
-    } else if (nextId === 'step-final') {
+        const hasGenreButtons = document.querySelectorAll('.genre-btn').length > 0;
+        if (hasGenreButtons) {
+            syncSelectionStyles('genre');
+        }
+    }
+    else if (nextId === 'step-category-preference') {
+        const hasKindButtons = document.querySelectorAll('.kind-btn').length > 0;
+        if (hasKindButtons) {
+            syncSelectionStyles('kind');
+        }
+    }
+    else if (nextId === 'step-mood') {
+        const hasMoodButtons = document.querySelectorAll('.mood-btn').length > 0;
+        if (hasMoodButtons) {
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                setBtnSelected(btn, btn.textContent.trim() === responses.user_mood);
+            });
+        }
+    }
+    else if (nextId === 'step-prediction-type') {
+        // rien à modifier ici, on garde tout tel quel
+    }
+    else if (nextId === 'step-final') {
         const textarea = document.getElementById('user_comment');
         if (textarea) textarea.value = responses.user_comment || '';
     }
@@ -60,7 +78,8 @@ function updateRecap() {
         user_genre_preference: "Genres préférés",
         user_category_preference: "Catégories préférées",
         user_comment: "Commentaire",
-        prediction_type: "Type de prédiction"
+        prediction_type: "Type de prédiction",
+        user_mood: "Humeur du moment",
     };
 
     Object.entries(responses).forEach(([key, value]) => {
@@ -86,7 +105,9 @@ function modifyField(field) {
         user_genre_preference: "step-genre-preference",
         user_category_preference: "step-category-preference",
         prediction_type: "step-prediction-type",
-        user_comment: "step-final"
+        user_mood: "step-mood",
+        user_comment: "step-final",
+
     };
     nextStep(stepMap[field]);
 }
@@ -152,6 +173,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// --- Gestion des événements DOM ---
 document.addEventListener("DOMContentLoaded", () => {
     const ageInput = document.getElementById("user_age");
     if (ageInput) ageInput.addEventListener("change", e => {
@@ -222,23 +244,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- Après type de prédiction, on va vers humeur ---
     const predictionBtns = document.querySelectorAll('.prediction-type-btn');
     predictionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             responses.prediction_type = btn.getAttribute('data-type');
             updateRecap();
-            nextStep('step-final');
+            nextStep('step-mood');
         });
     });
+
+    // --- Validation humeur avant textarea final ---
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            responses.user_mood = btn.textContent.trim();
+            updateRecap();
+            document.querySelectorAll('.mood-btn').forEach(b => setBtnSelected(b, b === btn));
+        });
+    });
+
+    const validateMoodBtn = document.getElementById('validate-mood-btn');
+    if (validateMoodBtn) {
+        validateMoodBtn.addEventListener('click', () => {
+            if (!responses.user_mood) {
+                alert("Veuillez sélectionner votre humeur.");
+                return;
+            }
+            nextStep('step-final');
+        });
+    }
 
     const comment = document.getElementById('user_comment');
     if (comment) comment.addEventListener('input', e => {
         responses.user_comment = e.target.value;
         updateRecap();
     });
-});
 
-document.addEventListener("DOMContentLoaded", () => {
+    // --- Initialisation selon âge existant ---
     const userAgeFromDB = parseInt("{{ user_age|default:'0' }}");
     if (userAgeFromDB > 0) {
         responses.user_age = userAgeFromDB;
@@ -246,12 +288,5 @@ document.addEventListener("DOMContentLoaded", () => {
         nextStep('step-gender');
     } else {
         nextStep('step-age');
-    }
-    const ageInput = document.getElementById("user_age");
-    if (ageInput) {
-        ageInput.addEventListener("change", e => {
-            responses.user_age = e.target.value;
-            updateRecap();
-        });
     }
 });
