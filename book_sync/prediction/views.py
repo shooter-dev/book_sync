@@ -9,11 +9,25 @@ from collection.models import like_kind, like_genre
 
 def prediction_view(request):
     try:
-        response = requests.get(f"{ os.environ.get('URL_API_PREDICTION')}/predict")
+        payload = {
+            "user_age": int(request.GET.get("user_age", 0)),
+            "user_genre": request.GET.get("user_genre", ""),
+            "genre_preference": request.GET.get("genre_preference", ""),
+            "category_preference": request.GET.get("category_preference", ""),
+            "user_comment": request.GET.get("user_comment", ""),
+            "prediction_type": request.GET.get("prediction_type", "")
+        }
+
+        response = requests.post(
+            f"{os.environ.get('URL_API_PREDICTION')}/predict",
+            json=payload
+        )
         data = response.json()
-        return JsonResponse({"prediction": data["prediction"]})
+
+        return JsonResponse({"prediction": data.get("data")})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
 
 @login_required
 def category_preference_view(request):

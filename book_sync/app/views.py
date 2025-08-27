@@ -1,11 +1,13 @@
 import os
+from typing import Collection
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import requests
 import json
 from django.http import JsonResponse
 from dotenv import load_dotenv
-from collection.models import Genre, Kind
+from collection.models import Genre, Kind, Possession
 
 load_dotenv()
 
@@ -28,6 +30,8 @@ def prediction(request):
         'user_age': user_age,
         'genres': genres,
         'kinds': kinds,
+        # 'collection_json': json.dumps(user_data['collection']),
+        # 'read_json': json.dumps(user_data['read']),
     }
     return render(request, 'prediction.html', context)
 

@@ -255,3 +255,45 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+
+function submitToFastAPI() {
+const rawCollection = document.getElementById("collection_data").value;
+let collection = {};
+
+if (rawCollection && rawCollection.trim() !== "") {
+  try {
+    collection = JSON.parse(rawCollection);
+  } catch (e) {
+    console.error("❌ Erreur de parsing JSON:", e);
+  }
+} else {
+  console.warn("⚠️ Le champ collection_data est vide");
+}
+
+//console.log(JSON.parse(document.getElementById("read_data").value))
+console.log(JSON.parse(document.getElementById("collection_data").value))
+
+const payload = {
+  user_age: parseInt(responses.user_age),
+  user_genre: responses.user_genre,
+  genre_preference: responses.user_genre_preference.join(","),
+  category_preference: responses.user_category_preference.join(","),
+  user_comment: responses.user_comment,
+  prediction_type: responses.prediction_type,
+  user_id: document.getElementById("user_id").value,
+  //collection : JSON.parse(document.getElementById("collection_data").value),
+  read : JSON.parse(document.getElementById("read_data").value)
+};
+
+console.log("📦 Collection :", collection);
+console.log("📖 Read :", read);
+
+const queryString = Object.entries(payload)
+  .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+  .join("&");
+
+//window.location.href = `http://127.0.0.1:8001/predict/result?${queryString}`
+}
+

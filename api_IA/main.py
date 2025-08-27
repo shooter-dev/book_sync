@@ -1,14 +1,28 @@
 from routes.predict import router as predict_router
-from routes.test import router as test_router
 from fastapi import FastAPI
 from azure.identity import DefaultAzureCredential, AzureCliCredential
 from azure.ai.ml import MLClient
 from azure.storage.blob import BlobServiceClient
 from azure.keyvault.secrets import SecretClient
+from fastapi.middleware.cors import CORSMiddleware
+import sys, os
+from pathlib import Path
 
 app = FastAPI()
 app.include_router(predict_router)
-app.include_router(test_router)
+
+# Autoriser l'origine Django
+origins = [
+    "http://127.0.0.1:8000",  # ← autorise tout ce qui vient de ce domaine, peu importe le chemin
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,           # ← ici tu listes les domaines autorisés
+    allow_credentials=True,
+    allow_methods=["POST"],          # ← ou ["*"] si tu veux autoriser GET aussi
+    allow_headers=["*"]              # ← autorise tous les headers, y compris Content-Type
+)
 
 # Choix du credential
 try:

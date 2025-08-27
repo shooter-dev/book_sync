@@ -17,4 +17,6 @@ admin.site.register(models.Genre)
 
 admin.site.register(models.Authors)
 
+admin.site.register(models.Possession)
+
 
