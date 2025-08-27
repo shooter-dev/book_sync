@@ -177,9 +177,13 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
-                            Résilier l'abonnement
-                        </button>
+<form method="POST" action="{% url 'cancel_subscription' %}">
+    {% csrf_token %}
+    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-medium rounded-md">
+        Résilier l'abonnement
+    </button>
+</form>
+
                     {% else %}
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4 mb-4">
                             <div class="flex">

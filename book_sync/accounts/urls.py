@@ -12,4 +12,5 @@ urlpatterns = [
     path('delete_user/<int:pk>/', views.delete_user, name="delete_user"),
     path('update-age-info/', views.update_age_info, name='update_age_info'),
     path('update-mature-content/', views.update_mature_content, name='update_mature_content'),
+    path('cancel-subscription/', views.cancel_subscription, name='cancel_subscription'),
 ]

@@ -11,6 +11,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from collection.models import like_kind, like_genre
 import json
+from django.views.decorators.http import require_POST
 
 @never_cache
 @csrf_protect
@@ -66,8 +67,6 @@ def register_view(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         email = request.POST.get('email')
-        print(username, password1, password2, email)
-        print(request.POST)
 
         if not username or not password1 or not password2 or not email:
             messages.error(request, "Tous les champs sont obligatoires.")
@@ -81,8 +80,13 @@ def register_view(request):
         else:
             user = User.objects.create_user(username=username, password=password1, email=email)
             # Assigner automatiquement le nouveau utilisateur au groupe 'user'
-            user_group, created = Group.objects.get_or_create(name='user')
+            #user_group, created = Group.objects.get_or_create(name='user')
+            user_group = Group.objects.get(name='user')
+            print(
+                f"User Group : {user_group}"
+            )
             user.groups.add(user_group)
+            print(f" USER GROUPS : {user_group}")
             print(username, password1, email)
             messages.success(request, "Votre compte a été créé avec succès. Vous pouvez vous connecter.")
             print("Votre compte a été créé avec succès. Vous pouvez vous connecter.")
@@ -267,3 +271,18 @@ def update_mature_content(request):
         return redirect('profile')
     
     return redirect('profile')
+
+@require_POST
+@login_required
+def cancel_subscription(request):
+    if request.method == 'POST':
+        user = request.user
+        user_group, created = Group.objects.get_or_create(name='premium')
+        user.groups.remove(user_group)
+        print(f" USER GROUPS : {user_group}")
+
+        return redirect('login')
+
+    return redirect('/accounts/profile')
+
+
