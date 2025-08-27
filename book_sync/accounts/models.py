@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     age = models.IntegerField(blank=True, null=True, verbose_name="Âge")
     is_adult = models.BooleanField(default=False, verbose_name="18 ans ou plus")
     show_mature_content = models.BooleanField(default=False, verbose_name="Afficher contenu mature")
-    
+
     @property
     def is_premium(self):
         """Vérifie si l'utilisateur fait partie du groupe premium"""
