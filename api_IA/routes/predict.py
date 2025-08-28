@@ -10,7 +10,8 @@ from typing import Dict, List
 router = APIRouter()
 
 class VolumeBlock(BaseModel):
-    volumes: Dict[str, str]
+    volumes: Dict[str
+    , str]
     id_series: str
 
 class PredictionRequest(BaseModel):
