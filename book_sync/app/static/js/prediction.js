@@ -41,6 +41,7 @@ function nextStep(nextId) {
     else if (nextId === 'step-final') {
         const textarea = document.getElementById('user_comment');
         if (textarea) textarea.value = responses.user_comment || '';
+        updateRecap();
     } else if (nextId === 'step-comment') {
         updateRecap();
     }
@@ -109,6 +110,7 @@ function modifyField(field) {
         user_genre_preference: "step-genre-preference",
         user_category_preference: "step-category-preference",
         prediction_type: "step-prediction-type",
+        user_mood: "step-mood",
         user_comment: "step-final"
     };
     nextStep(stepMap[field]);
@@ -268,14 +270,20 @@ function getCookie(name) {
         });
     }
 
+    // Gestion du textarea des commentaires
     const comment = document.getElementById('user_comment');
-    if (comment) comment.addEventListener('input', e => {
-        responses.user_comment = e.target.value;
-        updateRecap();
-    });
+    if (comment) {
+        comment.addEventListener('input', e => {
+            responses.user_comment = e.target.value;
+            updateRecap();
+            syncHiddenFields(); // Synchroniser immédiatement
+        });
+    }
 
     // --- Initialisation selon âge existant ---
-    const userAgeFromDB = parseInt("{{ user_age|default:'0' }}");
+    const userAgeData = document.getElementById('user-age-data');
+    const userAgeFromDB = userAgeData ? parseInt(userAgeData.textContent) : 0;
+    
     if (userAgeFromDB > 0) {
         responses.user_age = userAgeFromDB;
         updateRecap();
@@ -283,6 +291,7 @@ function getCookie(name) {
     } else {
         nextStep('step-age');
     }
+    
     const ageInput = document.getElementById("user_age");
     if (ageInput) {
         ageInput.addEventListener("change", e => {
@@ -290,16 +299,31 @@ function getCookie(name) {
             updateRecap();
         });
     }
+    
+    // --- Injection des données collection/read ---
+    try {
+        const collectionData = document.getElementById('collection-data');
+        const readData = document.getElementById('read-data');
+        const collectionInput = document.getElementById("user_collection");
+        const readInput = document.getElementById("prediction_read");
+        
+        if (collectionData && collectionInput) {
+            const collectionJson = collectionData.textContent.trim();
+            collectionInput.value = collectionJson;
+        }
+        
+        if (readData && readInput) {
+            const readJson = readData.textContent.trim();
+            readInput.value = readJson;
+        }
+        
+    } catch (error) {
+        console.error("Erreur lors de l'injection des données:", error);
+    }
 
-    // ✅ CORRECTION : Récupération des données Django existantes
-    const collectionInput = document.getElementById("user_collection");
-    const readInput = document.getElementById("prediction_read");
-
-    console.log("Collection input value:", collectionInput ? collectionInput.value : "N/A");
-    console.log("Read input value:", readInput ? readInput.value : "N/A");
 
 
-// ✅ FONCTION CORRIGÉE : syncHiddenFields
+// FONCTION CORRIGÉE : syncHiddenFields
 function syncHiddenFields() {
     // Mise à jour des champs de formulaire
     document.getElementById("user_age_hidden").value = responses.user_age || "";
@@ -308,82 +332,22 @@ function syncHiddenFields() {
     document.getElementById("category_preference_hidden").value = responses.user_category_preference.join(",") || "";
     document.getElementById("user_comment_hidden").value = responses.user_comment || "";
     document.getElementById("prediction_type_hidden").value = responses.prediction_type || "";
+    document.getElementById("user_mood_hidden").value = responses.user_mood || "";
 
 
 
-    console.log("Champs cachés synchronisés:", {
-        age: responses.user_age,
-        genre: responses.user_genre,
-        genre_pref: responses.user_genre_preference,
-        category_pref: responses.user_category_preference,
-        comment: responses.user_comment,
-        prediction_type: responses.prediction_type
-    });
 }
 
-// ✅ FONCTION DE DEBUG pour vérifier les données
-function debugFormData() {
-    const formData = new FormData(document.getElementById('prediction-form'));
 
-    console.log("=== DONNÉES DU FORMULAIRE ===");
-    for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+// Gestion de la soumission du formulaire
+document.getElementById("prediction-form").addEventListener("submit", function(e) {
+    // Synchroniser tous les champs avant l'envoi
+    syncHiddenFields();
+    
+    // Récupérer la valeur du textarea au moment de la soumission
+    const textarea = document.getElementById('user_comment');
+    if (textarea) {
+        responses.user_comment = textarea.value;
+        document.getElementById("user_comment_hidden").value = textarea.value;
     }
-
-    // Vérification spéciale des données JSON
-    const collectionValue = formData.get('collection');
-    const readValue = formData.get('read');
-
-    if (collectionValue) {
-        try {
-            const collectionData = JSON.parse(collectionValue);
-            console.log("Collection parsée:", collectionData);
-        } catch (e) {
-            console.error("Erreur parsing collection:", e);
-        }
-    }
-
-    if (readValue) {
-        try {
-            const readData = JSON.parse(readValue);
-            console.log("Read parsée:", readData);
-        } catch (e) {
-            console.error("Erreur parsing read:", e);
-        }
-    }
-}
-
-// Ajout d'un bouton de debug (optionnel, pour tes tests)
-document.addEventListener("DOMContentLoaded", () => {
-    // Ajouter un bouton de debug en bas de page
-    const debugBtn = document.createElement('button');
-    debugBtn.textContent = '🐛 Debug Form Data';
-    debugBtn.type = 'button';
-    debugBtn.className = 'fixed bottom-4 right-4 bg-yellow-500 text-black px-4 py-2 rounded shadow-lg hover:bg-yellow-600';
-    debugBtn.onclick = debugFormData;
-    document.body.appendChild(debugBtn);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const initialCollection = JSON.parse(document.getElementById('collection-data').textContent);
-    const initialRead = JSON.parse(document.getElementById('read-data').textContent);
-
-    const collectionInput = document.getElementById("user_collection");
-    const readInput = document.getElementById("prediction_read");
-
-    if (collectionInput) collectionInput.value = JSON.stringify(initialCollection);
-    if (readInput) readInput.value = JSON.stringify(initialRead);
-
-    console.log("Collection initiale injectée:", collectionInput.value);
-    console.log("Read initial injecté:", readInput.value);
-});
-
-document.getElementById("prediction-form").addEventListener("submit", function() {
-    syncHiddenFields(); // met à jour les autres champs dynamiques
-
-    // Collection et Read restent injectés
-    console.log("🚀 FormData prêt à envoyer :", {
-        collection: document.getElementById("user_collection").value,
-        read: document.getElementById("prediction_read").value
-    });
 });
