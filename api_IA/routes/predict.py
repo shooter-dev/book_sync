@@ -10,8 +10,8 @@ from typing import Dict, List
 router = APIRouter()
 
 class VolumeBlock(BaseModel):
-    volumes: Dict[str, str]  # numéro du volume → id du volume
-    id_series: str           # id de la série
+    volumes: Dict[str, str]
+    id_series: str
 
 class PredictionRequest(BaseModel):
     user_age: int
@@ -22,6 +22,7 @@ class PredictionRequest(BaseModel):
     prediction_type: str
     collection: Dict[str, VolumeBlock]
     read: Dict[str, VolumeBlock]
+    user_mood : str
     csrfmiddlewaretoken:str
 
 
@@ -33,21 +34,21 @@ async def predict(
     category_preference: str = Form(...),
     user_comment: str = Form(...),
     prediction_type: str = Form(...),
-    collection: str = Form(""),
-    read: str = Form(""),
-    csrfmiddlewaretoken:  str = Form(""),
+    collection: str = Form(...),
+    read: str = Form(...),
+    user_mood : str =Form(...),
+    csrfmiddlewaretoken:  str = Form(...),
 ):
     try:
         collection_data = json.loads(collection) if collection else {}
         read_data = json.loads(read) if read else {}
-
-        genre_pref = genre_preference.split(",")
-        category_pref = category_preference.split(",")
+        genre_pref = genre_preference.split(",") if genre_preference else []
+        category_pref = category_preference.split(",") if category_preference else []
 
     except json.JSONDecodeError as e:
         return JSONResponse(
             status_code=400,
-            content={"error": f"❌ JSON invalide: {str(e)}", "collection": collection, "read": read}
+            content={"error": f"JSON invalide: {str(e)}", "collection": collection, "read": read}
         )
 
     return {
@@ -59,5 +60,6 @@ async def predict(
         "prediction_type": prediction_type,
         "collection": collection_data,
         "read": read_data,
-        "message": "✅ JSON bien décodé"
+        "user_mood": user_mood,
+        "status": "success"
     }

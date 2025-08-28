@@ -5,7 +5,7 @@ import requests
 import json
 from django.http import JsonResponse
 from dotenv import load_dotenv
-from collection.models import Genre, Kind,Possession, Read
+from collection.models import Genre, Kind,Possession
 from typing import Collection
 
 
@@ -31,11 +31,13 @@ def prediction(request):
     user_age = getattr(request.user, 'age', None)
     genres = Genre.objects.filter(to_display=True)
     kinds = Kind.objects.all()
+    
     context = {
         'user_age': user_age,
         'genres': genres,
         'kinds': kinds,
     }
+    
     return render(request, 'prediction.html', context)
 
 @login_required

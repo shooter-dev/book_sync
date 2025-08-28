@@ -22,24 +22,24 @@
     </div>
 
     <!-- Formulaire interactif -->
-  <form id="prediction-form" method="POST" action="http://127.0.0.1:8001/predict/" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
-
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+    <form id="prediction-form" method="POST" action="http://127.0.0.1:8001/predict/">
+        {% csrf_token %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
         <!-- Question 1 : Âge -->
         <div id="step-age">
             <label for="user_age" class="block text-lg font-medium text-gray-900 dark:text-white mb-2">Quel est votre âge ?</label>
             <input type="number" id="user_age" name="user_age" value="{{ user.age }}"
                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white">
-            <button onclick="nextStep('step-gender')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
+            <button type="button"  onclick="nextStep('step-gender')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Valider</button>
         </div>
 
         <!-- Question 2 : Genre -->
         <div id="step-gender" class="hidden">
             <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quel est votre genre ?</p>
             <div class="grid grid-cols-3 gap-4">
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Homme</button>
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Femme</button>
-                <button class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Non binaire</button>
+                <button type="button"  class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Homme</button>
+                <button type="button"  class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Femme</button>
+                <button type="button"  class="response-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Non binaire</button>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
                 </p>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {% for genre in genres %}
-                        <button class="genre-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                        <button type="button"  class="genre-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
                                 data-genre-id="{{ genre.id }}" data-genre-title="{{ genre.title }}">
                             {{ genre.title }}
                         </button>
@@ -60,7 +60,7 @@
                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                     <span id="genre-count">0</span>/3 genres sélectionnés
                 </div>
-                <button id="validate-genre-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                <button type="button"  id="validate-genre-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                     Valider mes choix
                 </button>
             {% else %}
@@ -68,7 +68,7 @@
                     Aucun genre n'est disponible. Veuillez définir vos genres dans votre profil.
                 </p>
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Entrez vos choix dans la rubrique : Genres</p>
-                <button onclick="window.location.href='/accounts/profile/'"
+                <button type="button"  onclick="window.location.href='/accounts/profile/'"
                         class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
                     Prérequis
                 </button>
@@ -83,7 +83,7 @@
                 </p>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {% for kind in kinds %}
-                        <button class="kind-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                        <button type="button"  class="kind-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
                                 data-kind-id="{{ kind.id }}" data-kind-title="{{ kind.title }}">
                             {{ kind.title }}
                         </button>
@@ -92,7 +92,7 @@
                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                     <span id="kind-count">0</span>/5 catégories sélectionnées
                 </div>
-                <button id="validate-category-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                <button type="button"  id="validate-category-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                     Valider mes choix
                 </button>
             {% else %}
@@ -100,7 +100,7 @@
                     Aucune catégorie n'est disponible. Veuillez définir vos catégories dans votre profil.
                 </p>
                 <p class="text-lg font-medium text-gray-900 dark:text-white mb-4">Entrez vos choix dans la rubrique : Types de contenu (Kinds)</p>
-                <button onclick="window.location.href='/accounts/profile/'"
+                <button type="button"  onclick="window.location.href='/accounts/profile/'"
                         class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
                     Prérequis
                 </button>
@@ -113,11 +113,11 @@
                 Voulez-vous une prédiction sur les livres ?
             </p>
             <div class="grid grid-cols-2 gap-4">
-                <button class="prediction-type-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                <button type="button"  type="button" class="prediction-type-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
                         data-type="collection">
                     Collection
                 </button>
-                <button class="prediction-type-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
+                <button type="button"  class="prediction-type-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition"
                         data-type="proposition">
                     Proposition de découverte
                 </button>
@@ -130,16 +130,16 @@
                 Quelle est votre humeur du moment ?
             </p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Joyeux</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Triste</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Énervé</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Sentimental</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Comique</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Bagarreur</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Coquin</button>
-                <button class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Colère</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Joyeux</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Triste</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Énervé</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Sentimental</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Comique</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Bagarreur</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Coquin</button>
+                <button type="button"  class="mood-btn bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition">Colère</button>
             </div>
-            <button id="validate-mood-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            <button type="button"  id="validate-mood-btn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
                 Valider mon humeur
             </button>
         </div>
@@ -151,7 +151,7 @@
             <textarea id="user_comment" name="user_comment" rows="5" maxlength="500"
                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-900 dark:text-white"
                       placeholder="Exprimez vos attentes ou envies..."></textarea>
-            <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Envoyer</button>
+            <button type="button"  class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Envoyer</button>
         </div>
 
         <!-- Récapitulatif dynamique -->
@@ -161,6 +161,12 @@
                 <!-- Réponses dynamiques -->
             </div>
         </div>
+        
+        <!-- Données Django injectées pour JavaScript -->
+        <script id="collection-data" type="application/json">{{ collection_json|safe }}</script>
+        <script id="read-data" type="application/json">{{ read_json|safe }}</script>
+        <script id="user-age-data" type="application/json">{{ user_age|default:"0" }}</script>
+        
         <!-- Bouton final d'envoi -->
         <input type="hidden" name="user_age" id="user_age_hidden">
         <input type="hidden" name="user_genre" id="user_genre_hidden">
@@ -170,10 +176,12 @@
         <input type="hidden" name="prediction_type" id="prediction_type_hidden">
         <input type="hidden" name="collection" id="user_collection">
         <input type="hidden" name="read" id="prediction_read">
-        <div class="text-center mt-6">
-          <button  class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-             Envoyer ma prédiction
-          </button>
+        <input type="hidden" name="user_mood" id="user_mood_hidden">
+            <div class="text-center mt-6">
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+                   Envoyer ma prédiction
+                </button>
+            </div>
         </div>
     </form>
 </div>

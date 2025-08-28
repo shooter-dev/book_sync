@@ -9,7 +9,7 @@ from lecture.models import Read
 import json
 
 def get_possessions(user_id):
-    result=Read.objects.filter(user_id=user_id).select_related("volume__serie")
+    result=Possession.objects.filter(user_id=user_id).select_related("volume__serie")
     return result
 
 def get_reads(user_id):
@@ -29,8 +29,8 @@ def format_data(entries):
                 "id_series": str(entry.volume.serie.id)
             }
 
-        # 🔄 inversion : ID devient clé, numéro devient valeur
-        result[serie]["volumes"][vol_id] = vol_num
+        # Volume number comme clé, ID comme valeur
+        result[serie]["volumes"][vol_num] = vol_id
 
     return result
 
@@ -38,16 +38,32 @@ def format_data(entries):
 def prediction_view(request):
     user_id = request.user.id
 
+    # Données de collection et lecture
     possessions = get_possessions(user_id)
     reads = get_reads(user_id)
-
     collection_data = format_data(possessions)
     read_data = format_data(reads)
+
+    # Données pour les préférences utilisateur
+    from accounts.models import CustomUser
+    try:
+        custom_user = CustomUser.objects.get(id=request.user.id)
+        user_age = custom_user.age
+    except:
+        user_age = None
+    
+    user_kind_likes = like_kind.objects.filter(user=request.user).select_related('kind')
+    kinds = [like.kind for like in user_kind_likes]
+
+    user_genres_link = like_genre.objects.filter(user=request.user).select_related('genre')
+    genres = [like.genre for like in user_genres_link]
 
     context = {
         "collection_json": json.dumps(collection_data),
         "read_json": json.dumps(read_data),
-        # tu peux ajouter d'autres champs si besoin
+        'user_age': user_age,
+        'kinds': kinds,
+        'genres': genres
     }
 
     return render(request, "prediction.html", context)
@@ -112,6 +128,8 @@ def prediction_view(request):
 
 @login_required
 def category_preference_view(request):
+    user_id = request.user.id
+    
     # Récupérer l'âge de l'utilisateur connecté
     from accounts.models import CustomUser
     try:
@@ -125,11 +143,35 @@ def category_preference_view(request):
 
     user_genres_link = like_genre.objects.filter(user=request.user).select_related('genre')
     genres = [like.genre for like in user_genres_link]
+    
+    # Récupération des données utilisateur
+    try:
+        possessions = get_possessions(user_id)
+        reads = get_reads(user_id)
+        
+        collection_data = format_data(possessions)
+        read_data = format_data(reads)
+        
+        collection_json = json.dumps(collection_data)
+        read_json = json.dumps(read_data)
+        
+        # Si pas de données, utiliser des objets vides
+        if not collection_data:
+            collection_json = "{}"
+            
+        if not read_data:
+            read_json = "{}"
+        
+    except Exception as e:
+        collection_json = "{}"
+        read_json = "{}"
 
     return render(request, 'prediction.html', {
         'user_age': user_age,
         'kinds': kinds,
-        'genres': genres
+        'genres': genres,
+        'collection_json': collection_json,
+        'read_json': read_json,
     })
 
 @login_required
