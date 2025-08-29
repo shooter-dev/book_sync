@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Résultat de Prédiction - BookSync{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Titre principal -->
+    <div class="mb-8">
+        <div class="flex items-center space-x-3 mb-2">
+            <div class="p-2 bg-green-600 rounded-lg">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Vos recommandations personnalisées</h1>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">
+            Basée sur vos préférences et votre collection, voici notre sélection de séries qui devraient vous plaire.
+        </p>
+    </div>
+
+    <!-- Résumé des critères utilisés -->
+    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-8">
+        <h2 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">Critères de prédiction</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+            {% if user_data.age %}
+            <div class="flex items-center space-x-2">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Âge:</span>
+                <span class="text-blue-700 dark:text-blue-300">{{ user_data.age }} ans</span>
+            </div>
+            {% endif %}
+            
+            {% if user_data.genre %}
+            <div class="flex items-center space-x-2">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Genre:</span>
+                <span class="text-blue-700 dark:text-blue-300">{{ user_data.genre }}</span>
+            </div>
+            {% endif %}
+            
+            {% if user_data.mood %}
+            <div class="flex items-center space-x-2">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Humeur:</span>
+                <span class="text-blue-700 dark:text-blue-300">{{ user_data.mood }}</span>
+            </div>
+            {% endif %}
+            
+            {% if user_data.prediction_type %}
+            <div class="flex items-center space-x-2">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Type:</span>
+                <span class="text-blue-700 dark:text-blue-300">{{ user_data.prediction_type }}</span>
+            </div>
+            {% endif %}
+            
+            {% if user_data.genres %}
+            <div class="col-span-full">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Genres préférés:</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                    {% for genre in user_data.genres %}
+                    <span class="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if user_data.categories %}
+            <div class="col-span-full">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Catégories préférées:</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                    {% for category in user_data.categories %}
+                    <span class="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded">{{ category }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if user_data.comment %}
+            <div class="col-span-full">
+                <span class="font-medium text-blue-800 dark:text-blue-200">Votre message:</span>
+                <div class="mt-2 p-3 bg-blue-100 dark:bg-blue-800/50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-blue-900 dark:text-blue-100 italic text-sm leading-relaxed">
+                        "{{ user_data.comment }}"
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Message d'erreur API -->
+    {% if api_error %}
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-6 mb-8">
+        <div class="flex items-center space-x-3">
+            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+            <h3 class="text-lg font-medium text-red-800 dark:text-red-200">Erreur de prédiction</h3>
+        </div>
+        <p class="mt-2 text-red-700 dark:text-red-300">
+            {{ api_error }}
+        </p>
+        <div class="mt-4">
+            <a href="{% url 'prediction' %}" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+                </svg>
+                Réessayer la prédiction
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Message si aucune prédiction -->
+    {% if not predictions or predictions|length == 0 %}
+    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-6">
+        <div class="flex items-center space-x-3">
+            <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+            <h3 class="text-lg font-medium text-yellow-800 dark:text-yellow-200">Aucune prédiction disponible</h3>
+        </div>
+        <p class="mt-2 text-yellow-700 dark:text-yellow-300">
+            Nous n'avons pas pu générer de recommandations basées sur vos critères actuels. 
+            Essayez avec des préférences différentes ou enrichissez votre collection.
+        </p>
+        <div class="mt-4">
+            <a href="{% url 'prediction' %}" class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+                </svg>
+                Refaire une prédiction
+            </a>
+        </div>
+    </div>
+    {% else %}
+
+    <!-- Liste des prédictions -->
+    <div class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Nos recommandations ({{ predictions|length }} série{{ predictions|length|pluralize }})
+            </h2>
+            <div class="flex space-x-2">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Score de correspondance</span>
+                <div class="flex items-center space-x-1">
+                    {% for i in "12345" %}
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grille de séries recommandées -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {% for prediction in predictions %}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <!-- En-tête de la carte -->
+                <div class="bg-gradient-to-r from-mangacollec-red to-red-700 p-4">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-white mb-1">{{ prediction.title|default:"Série recommandée" }}</h3>
+                            {% if prediction.author %}
+                            <p class="text-red-100">par {{ prediction.author }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            <div class="bg-white/20 rounded-lg px-3 py-1">
+                                <div class="flex items-center space-x-1">
+                                    {% with score=prediction.score|default:0 %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= score %}
+                                        <svg class="w-4 h-4 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        {% else %}
+                                        <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                </div>
+                                <span class="text-xs text-red-100">{{ prediction.score|default:0 }}/5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu de la carte -->
+                <div class="p-6">
+                    <!-- Commentaire/Description -->
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Pourquoi cette série ?</h4>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {{ prediction.comment|default:"Cette série correspond à vos goûts et préférences. Elle devrait vous offrir une expérience de lecture enrichissante selon votre profil et vos attentes actuelles." }}
+                        </p>
+                    </div>
+
+                    <!-- Métadonnées de la série -->
+                    <div class="space-y-3">
+                        {% if prediction.genre %}
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Genre:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ prediction.genre }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if prediction.category %}
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7z"/>
+                            </svg>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Catégorie:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ prediction.category }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if prediction.status %}
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Statut:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ prediction.status }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if prediction.volumes_count %}
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+                            </svg>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Volumes:</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ prediction.volumes_count }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-6 flex space-x-3">
+                        {% if prediction.series_id %}
+                        <a href="{% url 'series_detail' prediction.series_id %}" 
+                           class="flex-1 bg-mangacollec-red hover:bg-red-700 text-white text-center py-2 px-4 rounded-lg transition">
+                            Voir la série
+                        </a>
+                        {% endif %}
+                        <button type="button" class="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg transition">
+                            Ajouter à ma liste
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions finales -->
+    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'prediction' %}" 
+           class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Nouvelle prédiction
+        </a>
+        
+        <a href="{% url 'index' %}" 
+           class="inline-flex items-center justify-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Note informative -->
+    <div class="mt-8 bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 text-center">
+        <svg class="w-8 h-8 mx-auto text-gray-400 mb-3" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Comment ça marche ?</h3>
+        <p class="text-gray-600 dark:text-gray-400">
+            Ces recommandations sont générées par notre algorithme de prédiction basé sur vos préférences, votre collection actuelle et votre historique de lecture. 
+            Plus vous utilisez BookSync, plus nos recommandations deviennent précises !
+        </p>
+    </div>
+</div>
+
+<style>
+.mangacollec-red {
+    background-color: #CF000A;
+}
+.mangacollec-red:hover {
+    background-color: #B0000A;
+}
+</style>
+
+{% endblock %}
