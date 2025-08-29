@@ -6,4 +6,5 @@ urlpatterns = [
     path("collection/", views.collection, name="collection"),
     path("recommendation/", views.recommendation, name="recommendation"),
     path("prediction/", views.prediction, name="prediction"),
+    path("predict-responce/", views.predict_responce, name="predict-responce"),
 ]
