@@ -8,7 +8,7 @@ db.sqlite3
 media/
 
 # Migrations
-book_sync/*/migrations/[0-9]*.py
+#book_sync/*/migrations/[0-9]*.py
 
 # Python
 *.py[cod]
