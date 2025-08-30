@@ -7,7 +7,7 @@ on:
 
 env:
   AZURE_CONTAINER_REGISTRY: booksyncrepo.azurecr.io
-  IMAGE_NAME: booksync
+  IMAGE_NAME: app-booksync
   RESOURCE_GROUP: vplatevoetRG
   CONTAINER_APP: app-booksync
 
