@@ -3,7 +3,7 @@ name: Build and Deploy to Azure Container App
 on:
   push:
     branches:
-      - main
+      - dev
 
 env:
   AZURE_CONTAINER_REGISTRY: booksyncrepo.azurecr.io
