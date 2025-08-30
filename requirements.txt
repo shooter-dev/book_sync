@@ -1,16 +1,7 @@
 django
 psycopg2-binary
 python-dotenv
-fastapi
-git+https://github.com/shooter-dev/mangacollec_lib.git
 uvicorn
-# azure
-azure-identity
-azure-ai-ml
-azure-storage-blob
-azure-keyvault-secrets
 pandas
 psycopg2
-
-#fastapi
-python-multipart
+requests
