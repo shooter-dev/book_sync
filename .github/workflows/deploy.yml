@@ -9,6 +9,8 @@ on:
       - 'README.md'
       - 'data_doc/**'
       - '*.md'
+      - '.github/**'
+      - '.dockerignore'
 
 env:
   AZURE_CONTAINER_REGISTRY: booksyncrepo.azurecr.io
