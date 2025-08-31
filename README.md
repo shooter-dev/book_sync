@@ -218,9 +218,10 @@ coverage report -m
 
 ### Développement Agile
 - ✅ **23 User Stories** implémentées (100% backlog)
-- ✅ **6 Épiques métier** livrées dans les délais
-- ✅ **Méthodologie Scrum** appliquée avec rigueur
+- ✅ **6 Épiques métier** livrées en 4 sprints d'1 semaine
+- ✅ **Méthodologie Scrum Intensive** appliquée avec rigueur
 - ✅ **Documentation complète** (UML, cahier charges, stories)
+- ✅ **Livraisons incrémentales** : MVP Sprint 2, Premium Sprint 3-4
 
 ### Code Base
 - ✅ **45 fichiers Python** architecture clean
@@ -244,10 +245,11 @@ coverage report -m
 - 👨‍💻 **[elvis-messiaen](https://github.com/elvis-messiaen)** - Frontend Developer
 
 ### Méthodologie
-- **Scrum Agile** avec sprints 2 semaines
-- **Collaboration GitHub** : Code review, branches features
-- **Documentation Living** : Mise à jour continue
-- **Amélioration Continue** : Retrospectives et adaptation
+- **Scrum Intensif** : 4 sprints de 1 semaine avec livraisons continues
+- **Daily Standups** : Synchronisation quotidienne équipe
+- **Collaboration GitHub** : Code review, branches features, CI/CD
+- **Documentation Living** : Mise à jour continue et rétrospectives
+- **Démonstrations** : Présentation des fonctionnalités à chaque sprint
 
 ---
 
@@ -255,7 +257,7 @@ coverage report -m
 
 ### Artefacts Disponibles
 - 📋 **[Cahier des Charges](data_doc/CAHIER_DES_CHARGE_FONCTIONEL.md)** - Spécifications complètes
-- 📝 **[User Stories](data_doc/agile/user_story.md)** - 23 stories, 6 épiques  
+- 📝 **[User Stories](data_doc/agile/USER_STORY.md)** - 23 stories, 6 épiques  
 - 🎯 **[Rapport Certification Agile](RAPPORT_CERTIFICATION_AGILE.md)** - Démarche complète
 - 🏗️ **[UML Database](data_doc/annexe/uml/mcd_bdd/)** - Modélisation PlantUML
 - ⚙️ **[Guide Développement](CLAUDE.md)** - Standards et conventions

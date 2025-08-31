@@ -16,7 +16,7 @@
 **CONTEXTE PROFESSIONNEL**
 - **Secteur** : EdTech / Applications de gestion personnelle
 - **Type de projet** : Application web full-stack avec méthodologie Scrum
-- **Durée** : 6 mois (conception, développement, déploiement)
+- **Durée** : 4 semaines (4 sprints d'1 semaine chacun)
 - **Environnement** : Équipe distribuée avec collaboration GitHub
 
 ---
@@ -75,11 +75,11 @@ Book Sync est une plateforme web moderne permettant la gestion complète de coll
 ## 2. MISE EN ŒUVRE DE LA MÉTHODOLOGIE AGILE
 
 ### 2.1 Approche agile adoptée
-Le projet suit une approche **Scrum adaptée** avec :
-- Développement par **itérations courtes** centrées sur les fonctionnalités
-- **User Stories** structurées au format standard
-- **MVP (Minimum Viable Product)** avec extension progressive
-- **Tests et validation continue**
+Le projet suit une approche **Scrum intensive** avec :
+- **4 sprints de 1 semaine** avec livraisons incrémentales
+- **User Stories** structurées au format standard et priorisées
+- **MVP (Minimum Viable Product)** livré en Sprint 2, extensions en Sprint 3-4
+- **Tests et validation continue** avec démonstrations hebdomadaires
 
 ### 2.2 Artefacts agiles produits
 
@@ -132,21 +132,37 @@ Le cahier des charges définit des critères d'acceptation mesurables :
 
 ### 2.3 Planification et priorisation
 
-#### 2.3.1 Stratégie de release
-**Release 1 (MVP)** : Fonctionnalités utilisateur basique
-- Authentification utilisateur
-- Gestion collection (CRUD volumes)
-- Visualisation et progression
+#### 2.3.1 Planification Sprint (4 semaines intensives)
 
-**Release 2** : Fonctionnalités premium
-- Système d'abonnement
-- Pile à lire
-- Statistiques avancées
+**Sprint 1 (Semaine 1) - Foundation** : Infrastructure et authentification
+- ✅ Setup projet Django et architecture apps
+- ✅ Système d'authentification utilisateur
+- ✅ Modèles de données de base (Users, Authors, Genres, Series, Volumes)
+- ✅ Interface admin Django et premières vues
 
-#### 2.3.2 Priorisation par valeur
-1. **Haute priorité** : Gestion collection (valeur métier fondamentale)
-2. **Moyenne priorité** : Fonctionnalités premium (monétisation)
-3. **Basse priorité** : Statistiques avancées (différenciation)
+**Sprint 2 (Semaine 2) - MVP Core** : Collection Management
+- ✅ CRUD complet collection de volumes
+- ✅ Ajout/suppression volumes individuels et en groupe
+- ✅ Visualisation collection et progression
+- ✅ Design System MangaCollec et responsive
+
+**Sprint 3 (Semaine 3) - Premium Features** : Fonctionnalités avancées
+- ✅ Système d'abonnement premium
+- ✅ Tracking de lecture (modèle Read)
+- ✅ Statistiques par genre et publishers
+- ✅ Préférences utilisateur (like_genre, like_kind)
+
+**Sprint 4 (Semaine 4) - Advanced & Polish** : IA et finition
+- ✅ Système de prédiction/recommandations IA
+- ✅ Profil utilisateur complet (âge, genre, contrôle parental)
+- ✅ Historique temporel et analytics avancés
+- ✅ Tests, documentation et déploiement
+
+#### 2.3.2 Vélocité et capacité équipe
+- **Vélocité équipe** : 5-6 stories/sprint/développeur
+- **Capacité totale** : ~18 stories/sprint (équipe de 3)
+- **Répartition** : 23 stories sur 4 sprints = ~6 stories/sprint
+- **Buffer** : 10% pour imprévus et refactoring
 
 ---
 
@@ -332,7 +348,7 @@ Le projet Book Sync démontre une **maîtrise complète de la méthodologie agil
 Ce projet démontre une **maîtrise exceptionnelle de la méthodologie agile** appliquée dans un contexte professionnel réel. La qualité de la démarche, l'architecture technique et les livrables produits attestent d'une compréhension approfondie des enjeux agiles modernes.
 
 **Points d'Excellence Reconnus :**
-- ✅ **Méthodologie Scrum** appliquée avec rigueur et adaptabilité
+- ✅ **Méthodologie Scrum Intensive** : 4 sprints d'1 semaine avec rigueur
 - ✅ **Product Management** : Backlog structuré, priorisation par valeur
 - ✅ **Architecture Logicielle** : Clean Code, SOLID, patterns modernes  
 - ✅ **Documentation Professionnelle** : Complète, à jour, exploitable

@@ -131,9 +131,13 @@ Book Sync est une application web de gestion de collection de livres développé
 - Respect des droits d'auteur pour les métadonnées
 
 ### 5.3 Contraintes de délai
-- Développement par itérations agiles
-- Livraison par fonctionnalités MVP
-- Tests et validation continue
+- **Développement intensif** : 4 sprints de 1 semaine (4 semaines total)
+- **Sprint 1** : Foundation et authentification
+- **Sprint 2** : MVP Collection Management
+- **Sprint 3** : Fonctionnalités Premium 
+- **Sprint 4** : IA/Prédiction et finition
+- **Livraisons incrémentales** : Démonstrations hebdomadaires
+- **Tests et validation continue** : Intégration quotidienne
 
 ## 6. CRITÈRES D'ACCEPTATION
 

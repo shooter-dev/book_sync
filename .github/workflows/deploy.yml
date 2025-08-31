@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - dev
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'data_doc/**'
+      - '*.md'
 
 env:
   AZURE_CONTAINER_REGISTRY: booksyncrepo.azurecr.io

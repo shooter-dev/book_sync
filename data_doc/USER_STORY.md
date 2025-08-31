@@ -66,12 +66,6 @@ je veux pouvoir avoir une proposition sur ma prochaine lecture avec mes préfér
 afin de lire un volume qui m'a été proposer
 ```
 
-```text
-En tant qu' utilisateur {user, premium}, 
-je veux 
-afin de 
-```
-
 ## Statistiques
 
 ```text
@@ -92,12 +86,58 @@ je veux voir les volumes qu'il a été ajouté par mois et l'année
 afin de voir les volumes que j'ai rajouté dans ma collection telle mois et l'année
 ```
 
-## Profile
-
 ```text
 En tant qu' utilisateur {user, premium}, 
 je veux voir les volumes que j'ai lu par mois et l'année
 afin de voir les volumes que j'ai lu dans le mois et l'année
+```
+
+## Search
+
+```text
+En tant qu' utilisateur {anonyme, user, premium}, 
+je veux rechercher une série
+afin de voir les informations d'une série et les volumes associés
+```
+
+```text
+En tant qu' utilisateur {anonyme, user, premium}, 
+je veux rechercher un volume
+afin de voir les informations du volume 
+```
+
+```text
+En tant qu' utilisateur {anonyme, user, premium}, 
+je veux rechercher un auteur
+afin de voir les informations concernant l'auteur et les séries associées
+```
+
+## APP
+
+```text
+En tant que personne, 
+je veux pouvoir créer un compte
+afin de pouvoir m'inscrire sur l'application
+```
+
+## Profile
+
+```text
+En tant qu' utilisateur {user, premium}, 
+je veux pouvoir changer mon mot de passe
+afin de passer de mon ancien mot de passe à mon nouveau mot de passe
+```
+
+```text
+En tant qu' utilisateur {user, premium}, 
+je veux pouvoir supprimer mon compte
+afin de plus avoir d'informations sur moi sur l'application
+```
+
+```text
+En tant qu' utilisateur {user, premium}, 
+je veux pouvoir changer d'adresse e-mail
+afin de pouvoir utiliser ma nouvelle adresse e-mail
 ```
 
 ```text
