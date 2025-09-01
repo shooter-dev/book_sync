@@ -179,14 +179,51 @@ uvicorn core.asgi:application --host 0.0.0.0 --port 8000
 
 ### Tests Automatisés
 ```bash
+# Navigation vers le répertoire principal
+cd book_sync
+
 # Tests unitaires
 python manage.py test
 
-# Coverage report
-pip install coverage
-coverage run --source='.' manage.py test
-coverage report -m
+# Tests avec verbosité détaillée
+python manage.py test --verbosity=2
+
+# Tests d'un module spécifique
+python manage.py test accounts
+python manage.py test collection
+python manage.py test app
 ```
+
+### Couverture de Code
+```bash
+# Installation du package coverage
+pip install coverage
+
+# Exécution des tests avec couverture
+coverage run --source='.' manage.py test
+
+# Rapport de couverture en terminal
+coverage report -m
+
+# Génération du rapport HTML
+coverage html --directory=htmlcov
+
+# Ouverture du rapport HTML (macOS/Linux)
+open htmlcov/index.html
+```
+
+### Rapports de Tests
+Les rapports de tests sont générés automatiquement :
+- **Rapport Markdown** : `test_report.md`
+- **Rapport HTML** : `test_report.html`
+- **Couverture HTML** : `htmlcov/index.html`
+
+### Tests par Module
+- **accounts** : Authentification, inscription, profils utilisateur
+- **collection** : Gestion des livres, séries, auteurs
+- **lecture** : Suivi de lecture et statistiques 
+- **prediction** : Recommandations IA et préférences
+- **app** : Vues principales et API
 
 ### Qualité Code
 - **PEP8** : Standards Python respectés

@@ -71,6 +71,11 @@ coverage.xml
 *.py,cover
 .hypothesis/
 
+# Test reports (generated files)
+book_sync/test_report.html
+book_sync/test_report.md
+book_sync/test_results.txt
+
 # IA
 .claude/
 CLAUDE.md
