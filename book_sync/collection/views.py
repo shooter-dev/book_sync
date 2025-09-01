@@ -50,20 +50,53 @@ def collection(request):
 @csrf_exempt
 def search(request):
     """
-    fonction search qui permet de trouver les série dans la BDD
+    fonction search qui permet de trouver les série dans la BDD et les volumes par ISBN
     :param request:
     :return:
     """
     series = []
+    volumes = []
     search_term = ""
+    search_type = "series"
 
     if request.method == "GET" and request.GET.get('search'):
-        search_term = request.GET.get('search')
-        series = Serie.objects.filter(title__icontains=search_term)#.select_related('genre', 'publisher')
+        search_term = request.GET.get('search').strip()
+        
+        # Debug
+        print(f"=== DEBUG SEARCH ===")
+        print(f"search_term: '{search_term}'")
+        
+        # Détection automatique du type de recherche
+        # Si le terme ressemble à un ISBN (10 ou 13 chiffres avec tirets optionnels)
+        isbn_pattern = search_term.replace('-', '').replace(' ', '')
+        print(f"isbn_pattern: '{isbn_pattern}'")
+        print(f"isdigit: {isbn_pattern.isdigit()}")
+        print(f"length: {len(isbn_pattern)}")
+        
+        if isbn_pattern.isdigit() and len(isbn_pattern) in [10, 13]:
+            search_type = "isbn"
+            print(f"Recherche ISBN avec pattern: {isbn_pattern}")
+            # Recherche par ISBN exact ou partiel (utiliser le pattern nettoyé)
+            volumes = Volume.objects.filter(
+                isbn__icontains=isbn_pattern
+            ).select_related('serie', 'serie__genre', 'serie__publisher')
+            print(f"Volumes trouvés: {volumes.count()}")
+        else:
+            # Recherche classique par titre de série
+            search_type = "series"
+            print(f"Recherche série avec terme: {search_term}")
+            series = Serie.objects.filter(
+                title__icontains=search_term
+            ).select_related('genre', 'publisher')
+            print(f"Séries trouvées: {series.count()}")
+        
+        print("=== FIN DEBUG ===")
 
     context = {
         'series': series,
+        'volumes': volumes,
         'search_term': search_term,
+        'search_type': search_type,
     }
     return render(request, 'search.html', context)
 
