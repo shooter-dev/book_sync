@@ -6,8 +6,7 @@ import json
 from django.http import JsonResponse
 from dotenv import load_dotenv
 from collection.models import Genre, Kind,Possession
-from typing import Collection
-
+from core.settings import URL_API_PREDICTION
 
 load_dotenv()
 
@@ -54,16 +53,18 @@ def save_age(request):
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Mauvaise requête'})
 
+
 @login_required
 @user_passes_test(is_premium, login_url='/accounts/subscribe/')
 def predict_responce(request):
     """Vue pour traiter et afficher les résultats de prédiction de l'API"""
-    
+
     # Initialiser les variables
     predictions = []
     user_data = {}
     api_error = None
-    
+    responce_IA_global = ""
+
     if request.method == 'POST':
         # Récupérer et nettoyer les données du formulaire
         user_data = {
@@ -75,11 +76,18 @@ def predict_responce(request):
             'categories': [c.strip() for c in request.POST.get('category_preference', '').split(',') if c.strip()],
             'comment': request.POST.get('user_comment', '')
         }
-        
+
         # Sauvegarder les données utilisateur dans la session
         request.session['user_prediction_data'] = user_data
-        
-        # Préparer les données pour l'API (conserver les noms de champs originaux)
+
+        # Préparer les données pour l'API en format JSON
+        try:
+            collection_data = json.loads(request.POST.get('collection', '{}'))
+            read_data = json.loads(request.POST.get('read', '{}'))
+        except json.JSONDecodeError:
+            collection_data = {}
+            read_data = {}
+
         api_data = {
             'user_age': user_data['age'],
             'user_genre': user_data['genre'],
@@ -87,39 +95,40 @@ def predict_responce(request):
             'category_preference': request.POST.get('category_preference', ''),
             'user_comment': user_data['comment'],
             'prediction_type': user_data['prediction_type'],
-            'collection': request.POST.get('collection', '{}'),
-            'read': request.POST.get('read', '{}'),
-            'user_mood': user_data['mood'],
-            'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken', '')
+            'collection': collection_data,
+            'read': read_data,
+            'user_mood': user_data['mood']
         }
-        
+
         # Appeler l'API de prédiction
         try:
-            api_url = "http://127.0.0.1:8001/predict/"
+            api_url = f"{URL_API_PREDICTION}/predict/"
             print(f"Envoi des données à l'API: {api_url}")
             print(f"Données envoyées: {api_data}")
-            
-            response = requests.post(api_url, data=api_data, timeout=30)
+
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(api_url, json=api_data, headers=headers, timeout=60)
             print(f"Réponse API - Status: {response.status_code}")
-            
+
             if response.status_code == 200:
                 api_response = response.json()
                 print(f"Réponse API reçue: {api_response}")
-                
-                # Pour l'instant, l'API retourne les données de test
-                # Créer des prédictions factices basées sur les préférences utilisateur
-                predictions = generate_mock_predictions(user_data, api_response)
-                
+
+                # Récupérer les données depuis la bonne clé
+                predictions = api_response.get('serie_recomendees', [])
+                responce_IA_global = api_response.get('responce_IA_global', '')
+
                 # Sauvegarder les prédictions dans la session
                 request.session['predictions'] = predictions
-                
+                request.session['responce_IA_global'] = responce_IA_global
+
             else:
                 api_error = f"Erreur API: Status {response.status_code} - {response.text}"
                 print(api_error)
-                
+
         except requests.exceptions.Timeout:
-            api_error = "Timeout lors de l'appel à l'API de prédiction"
-            print(api_error)
+            api_error = "L'API de prédiction prend plus de temps que prévu. Veuillez réessayer dans quelques instants."
+            print("Timeout lors de l'appel à l'API de prédiction (60s)")
         except requests.exceptions.ConnectionError:
             api_error = "Impossible de se connecter à l'API de prédiction"
             print(api_error)
@@ -129,71 +138,29 @@ def predict_responce(request):
         except Exception as e:
             api_error = f"Erreur inattendue: {str(e)}"
             print(api_error)
-    
-    # Si on accède directement à la page en GET
+
     elif request.method == 'GET':
         # Récupérer les données depuis la session si disponibles
         predictions = request.session.get('predictions', [])
         user_data = request.session.get('user_prediction_data', {})
-    
+        responce_IA_global = request.session.get('responce_IA_global', '')
+
     # Préparer le contexte pour le template
+    user_age = getattr(request.user, 'age', None)
+    genres = Genre.objects.filter(to_display=True)
+    kinds = Kind.objects.all()
+
     context = {
+        'user_age': user_age,
+        'genres': genres,
+        'kinds': kinds,
         'predictions': predictions,
         'user_data': user_data,
         'api_error': api_error,
+        'responce_IA_global': responce_IA_global,
     }
-    
-    return render(request, 'prediction-responce.html', context)
 
-def generate_mock_predictions(user_data, api_response):
-    """Génère des prédictions factices basées sur les données utilisateur"""
-    
-    # Prédictions de base selon les préférences
-    base_predictions = [
-        {
-            'title': 'One Piece',
-            'author': 'Eiichiro Oda',
-            'comment': f"Parfait pour votre humeur {user_data.get('mood', 'aventureuse')} ! Cette série d'aventure épique correspond à vos goûts.",
-            'genre': user_data.get('genres', ['Aventure'])[0] if user_data.get('genres') else 'Aventure',
-            'category': user_data.get('categories', ['Manga'])[0] if user_data.get('categories') else 'Manga',
-            'score': 5,
-            'status': 'En cours',
-            'volumes_count': '100+',
-            'series_id': 1
-        },
-        {
-            'title': 'Demon Slayer',
-            'author': 'Koyoharu Gotouge',
-            'comment': f"Une excellente série pour quelqu'un de {user_data.get('age', '25')} ans qui apprécie l'action et l'émotion.",
-            'genre': user_data.get('genres', ['Action'])[1] if len(user_data.get('genres', [])) > 1 else 'Action',
-            'category': user_data.get('categories', ['Manga'])[0] if user_data.get('categories') else 'Manga',
-            'score': 4,
-            'status': 'Terminé',
-            'volumes_count': '23',
-            'series_id': 2
-        },
-        {
-            'title': 'Spirited Away',
-            'author': 'Hayao Miyazaki',
-            'comment': f"Un classique du Studio Ghibli qui correspond parfaitement à votre profil {user_data.get('genre', 'passionné')} !",
-            'genre': 'Fantastique',
-            'category': 'Anime',
-            'score': 5,
-            'status': 'Film',
-            'volumes_count': '1',
-            'series_id': 3
-        }
-    ]
-    
-    # Filtrer selon le type de prédiction
-    if user_data.get('prediction_type') == 'collection':
-        # Simuler des recommandations de la collection existante
-        return base_predictions[:2]
-    else:
-        # Propositions de découverte
-        return base_predictions
-        
-    return base_predictions
+    return render(request, 'prediction-responce.html', context)
 
 
 
