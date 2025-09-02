@@ -96,7 +96,7 @@ function updateRecap() {
 
             item.innerHTML = `
                 <span class="text-gray-800 dark:text-white font-medium">${labels[key]} : ${displayValue}</span>
-                <button onclick="modifyField('${key}')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">Modifier</button>
+                <button type="button" onclick="modifyField('${key}')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">Modifier</button>
             `;
             recapList.appendChild(item);
         }
