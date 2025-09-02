@@ -20,6 +20,15 @@
         </p>
     </div>
 
+    </div> <!-- fin du bloc titre principal -->
+
+{% if responce_IA_global %}
+<div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border-l-4 border-green-500">
+    <p class="text-green-800 dark:text-green-200 italic">{{ responce_IA_global }}</p>
+</div>
+{% endif %}
+
+
     <!-- Résumé des critères utilisés -->
     <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-8">
         <h2 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">Critères de prédiction</h2>
@@ -243,13 +252,10 @@
 
                     <!-- Actions -->
                     <div class="mt-6 flex space-x-3">
-                        {% if prediction.series_id %}
-                        <a href="{% url 'series_detail' prediction.series_id %}" 
-                           class="flex-1 bg-mangacollec-red hover:bg-red-700 text-white text-center py-2 px-4 rounded-lg transition">
+                        <button type="button" class="flex-1 bg-mangacollec-red hover:bg-red-700 text-white py-2 px-4 rounded-lg transition" onclick="alert('Fonctionnalité bientôt disponible')">
                             Voir la série
-                        </a>
-                        {% endif %}
-                        <button type="button" class="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg transition">
+                        </button>
+                        <button type="button" class="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg transition" onclick="alert('Fonctionnalité bientôt disponible')">
                             Ajouter à ma liste
                         </button>
                     </div>
