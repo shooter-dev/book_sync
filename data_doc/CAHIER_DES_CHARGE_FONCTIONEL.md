@@ -3,58 +3,73 @@
 ## 1. CONTEXTE ET OBJECTIFS
 
 ### 1.1 Présentation du projet
-Book Sync est une application web de gestion de collection de livres développée dans le cadre de la formation Simplon. L'application permet aux utilisateurs de gérer leur collection personnelle de volumes, suivre leur progression de lecture et bénéficier de fonctionnalités premium avancées.
+Book Sync est une application web de gestion de collection de livres développée dans le cadre de la formation Simplon.
+L'application permet aux utilisateurs de gérer leur collection personnelle de volumes,
+suivre leur progression de lecture 
+et bénéficier de fonctionnalités premium avancées pour de la recomendation/prediction d'une liste de serie 
+basé sur les préférences ce qu'il aime ou pas de l'utilisateur (kinds`categorie`, genres`type de livre`).
 
 ### 1.2 Objectifs métiers
-- Permettre la gestion complète d'une collection de livres personnalisée
-- Offrir un suivi de progression de lecture pour les utilisateurs
+- Permettre la gestion complète d'une collection de livres
+- Offrir un suivi de progression de lecture de leur series pour les utilisateurs
 - Proposer des fonctionnalités premium avec statistiques avancées
-- Faciliter la découverte de nouveaux contenus par genre et auteur
+- Faciliter la découverte de nouveaux contenus par genre et auteur avec de la recommendation / prediction
 
 ### 1.3 Public cible
-- **Utilisateurs basiques** : Lecteurs souhaitant organiser leur collection personnelle
-- **Utilisateurs premium** : Lecteurs avancés désirant des statistiques détaillées et une gestion avancée
+- **Utilisateurs basiques** : Lecteurs souhaitant suivre l'avancée de leur collection personnelle
+- **Utilisateurs premium** : Lecteurs avancés désirant des 
+  - statistiques détaillées
+  - recommandation adaptée
+  - prédiction d'une lecture
 
 ## 2. PÉRIMÈTRE FONCTIONNEL
 
 ### 2.1 Gestion des utilisateurs
 #### 2.1.1 Authentification
-- Création de compte utilisateur avec email et mot de passe
-- Connexion/déconnexion sécurisée
-- Gestion des profils utilisateur avec pseudo unique
+- Création de compte utilisateur avec `pseudo`, `email`, `password`
+- Connexion/déconnexion **`sécurisée`**
+- Gestion des profils utilisateur avec `pseudo`, `email` **unique**
 
 #### 2.1.2 Système de rôles
 - **Utilisateur basique** : Accès aux fonctionnalités :
     - gestion de sa collection de livres
-    - fonctionnalités premium pour une durée limitée
+    - possibilité de passer à l'option premium
+      - statistiques
+          - nombre de volume posséder
+          - nombre de series posséder
+          - l'avancée de chaque série
+
 - **Utilisateur premium** : Accès aux fonctionnalités :
     - aux fonctionnalités basic
-    - un suivi de ces lectures en cour
-    - une recomendation personalisée de ces prochains lectures
-    - statistiques de sa collection de livre
+    - un suivi de l'avancée de sa lecture par serie
+    - une recomendation / prédiction personalisée de ces prochains lectures
+    - statistiques 
+      - statistiques basic
+      - de sa collection de livre par `genre`, `Publishers`
 
 ### 2.2 Gestion des collections
 #### 2.2.1 Collection personnelle
-- **Ajout de volumes** : Ajout individuel ou en groupe de volumes à la collection
-- **Suppression de volumes** : Retrait individuel ou en groupe de la collection
+- **Ajout de volumes** : Ajout individuel ou des volumes de même serie à la collection
+- **Suppression de volumes** : Retrait individuel ou des volumes de même série de la collection
 - **Visualisation** : Affichage complet de la collection personnelle
-- **Progression** : Suivi des tomes complétés dans la collection
+- **Progression** : Suivi des tomes complétés de chaque série dans la collection
 
 #### 2.2.2 Métadonnées des volumes
 - Titre, numéro de tome, date de sortie
 - ISBN unique pour identification
 - Image de couverture
-- Association aux séries, genres, auteurs et éditeurs
+- Association aux séries, genres, publishers, auteurs
 
-### 2.3 Fonctionnalités premium
+### 2.3 Fonctionnalités premium 
 
-#### 2.3.1 Pile à lire
+#### 2.3.1 Ma Lecture
 - Gestion d'une liste de lecture personnalisée
 - Ajout/suppression de volumes lus
 - Progression de lecture par rapport à la collection totale
 
-#### 2.3.2 Statistiques avancées
-- **Statistiques par genre** : Répartition de la collection
+#### 2.3.2 Statistiques
+- **Statistiques par genres** : Répartition de la collection par `Genres`
+- **Statistiques par publishers** : Répartition de la collection par `Publishers`
 - **Historique d'ajouts** : Volumes ajoutés par mois/année
 - **Historique de lecture** : Volumes lus par mois/année
 
@@ -62,10 +77,12 @@ Book Sync est une application web de gestion de collection de livres développé
 
 #### 2.4.1 Organisation du contenu
 - **Séries** : Regroupement logique des volumes
-- **Genres** : Classification thématique avec préférences utilisateur
-- **Types (Kinds)** : Catégorisation par format/support
+- **Kind (catégorie)** : Classification thématique sous forme de tag
+exemples : `Extra-terrestre`, `Action`, `Humour`
+- **Genre (Type)** : Catégorisation par format/support 
+exemples : `Manga`, `Comic`, `Manhua`, `Manhwa`, `Roman`
 - **Auteurs** : Gestion des créateurs avec rôles spécifiques
-- **Éditeurs** : Information sur les maisons d'édition
+- **Publisher (Maison d'Edition)** : maisons d'édition
 
 #### 2.4.2 Système de préférences
 - Gestion des genres favoris par utilisateur
@@ -75,23 +92,28 @@ Book Sync est une application web de gestion de collection de livres développé
 ## 3. EXIGENCES TECHNIQUES
 
 ### 3.1 Architecture système
+#### 3.1.1 Frontend Aplication
 - **Framework** : Django (Python)
-- **Base de données** : SQLite (développement), extensible PostgreSQL (production)
+- **Base de données** : PostgreSQL `development`, `production`
 - **Frontend** : Templates Django avec CSS/HTML
 - **Authentification** : Système Django natif
-
+#### 3.1.2 Api Prediction Agent IA
+- **Framework** : FastAPI (Python)
+- **Base de données** : PostgreSQL `development`, `production`
 ### 3.2 Modèle de données
 #### 3.2.1 Entités principales
-- **Users** : Gestion des comptes utilisateur
+- **CustomUsers** : Gestion des comptes utilisateur
 - **Volumes** : Références des livres avec métadonnées
 - **Series** : Organisation par séries
-- **Possessions** : Association utilisateur-volume
-- **Authors/Jobs/Tasks** : Gestion des créateurs
+- **Possessions** : Références a la collection Association utilisateur-volume
+- **Read** : Références à la lecture Association utilisateur-volume
+- **Like_Genre/Like_kind** : Références des preference utilisateur Association utilisateur-kind
+- **Authors/Jobs/Tasks** : Gestion des Auteurs
 
 #### 3.2.2 Contraintes techniques
 - UUID comme clés primaires pour les entités métier
 - Relations many-to-many pour les associations complexes
-- Gestion des timestamps de création/modification
+- Gestion des timestamps de création
 - Support du contenu adulte avec flag booléen
 
 ### 3.3 Performances et scalabilité
@@ -108,7 +130,7 @@ Book Sync est une application web de gestion de collection de livres développé
 - Temps de réponse < 2 secondes pour les opérations courantes
 
 ### 4.2 Sécurité
-- Authentification sécurisée avec hashage des mots de passe
+- Authentification sécurisée avec Django
 - Protection CSRF sur les formulaires
 - Validation des données d'entrée
 - Gestion des sessions sécurisée
@@ -124,6 +146,12 @@ Book Sync est une application web de gestion de collection de livres développé
 - Développement en Django/Python
 - Déploiement sur environnement Linux
 - Compatible navigateurs modernes (Chrome, Firefox, Safari, Edge)
+- service Azure
+    - service `Serveur flexible Azure Database pour PostgreSQL` pour la bdd
+    - service `azur open IA` model llm Agent`GPT-4o-mini`
+    - service `azur open IA` model llm Embedding `text-embedding-ada-002`
+    - service `container APP` pour application Django
+    - service `container APP` pour api prediction Agent IA
 
 ### 5.2 Contraintes réglementaires
 - Conformité RGPD pour les données personnelles
@@ -132,6 +160,7 @@ Book Sync est une application web de gestion de collection de livres développé
 
 ### 5.3 Contraintes de délai
 - **Développement intensif** : 4 sprints de 1 semaine (4 semaines total)
+- **Sprint 0** : Mise en place la structure du project
 - **Sprint 1** : Foundation et authentification
 - **Sprint 2** : MVP Collection Management
 - **Sprint 3** : Fonctionnalités Premium 
@@ -143,18 +172,18 @@ Book Sync est une application web de gestion de collection de livres développé
 
 ### 6.1 Fonctionnalités de base (User basique)
 - ✅ Création de compte et authentification
-- ✅ Ajout/suppression de volumes en collection
+- ✅ Ajout/suppression des volumes dans leur collection personnelle
 - ✅ Visualisation de la collection personnelle
-- ✅ Suivi de progression des tomes
+- ✅ Suivi de progression des tomes par series
 
 ### 6.2 Fonctionnalités premium
 - ✅ Système d'abonnement premium
-- ✅ Gestion de la pile à lire
-- ✅ Statistiques par genre
+- ✅ Gestion de la lecture
+- ✅ Statistiques par genre, publisher
 - ✅ Historique d'activité (ajouts/lectures)
 
 ### 6.3 Qualité système
-- Interface responsive sur mobile et desktop
+- Interface responsive sur desktop et mobile 
 - Temps de chargement < 2s pour les pages principales
 - Aucune perte de données lors des opérations CRUD
 - Sécurité des comptes utilisateur
@@ -176,9 +205,12 @@ Book Sync est une application web de gestion de collection de livres développé
 ## 8. ANNEXES
 
 ### 8.1 Références techniques
-- Modèle UML : `data_doc/annexe/uml/mcd_bdd/mcd_bdd.plantuml`
-- User stories : `data_doc/agile/user_story.md`
+- Modèle UML : `data_doc/annexe/bdd.plantuml`
+- User stories : `data_doc/USER_STORY.md`
+- User stories Tache : `data_doc/TACHES.md`
 - Configuration Django : `book_sync/core/settings.py`
+### 8.2 Références spécifique
+  - Règlement spécifique RNCP : `data_doc/simplon_dev_ia_reglement_specifique.pdf`
 
 ### 8.2 Environnement de développement
 - Python 3.12+
@@ -190,7 +222,7 @@ Book Sync est une application web de gestion de collection de livres développé
 **Version** : 1.0  
 **Date** : 8/08/2025  
 **Projet** : Book Sync - Formation Simplon  
-**Équipe** : Développeurs Simplon (
-[sayana-project](https://github.com/sayana-project),
-[elvis-messiaen](https://github.com/elvis-messiaen),
-[shooter-dev](https://github.com/shooter-dev))
+**Équipe** : Développeurs Simplon
+- [sayana-project](https://github.com/sayana-project),
+- [elvis-messiaen](https://github.com/elvis-messiaen),
+- [shooter-dev](https://github.com/shooter-dev)
