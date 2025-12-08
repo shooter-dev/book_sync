@@ -418,7 +418,7 @@ class CollectionViewsTestCase(TestCase):
         # Vérifier les séries avec volumes
         series_with_volumes = response.context['series_with_volumes']
         self.assertIn(self.serie, series_with_volumes)
-        self.assertEqual(len(series_with_volumes[self.serie}/', 2)
+        self.assertEqual(len(series_with_volumes), 2)
     
     def test_search_view_get_empty(self):
         """Test de la vue de recherche sans terme"""
@@ -428,7 +428,7 @@ class CollectionViewsTestCase(TestCase):
         self.assertContains(response, 'search.html')
         
         # Vérifier le contexte
-        self.assertEqual(response.context['series'], [}/'
+        self.assertEqual(response.context['series'], [])
         self.assertEqual(response.context['search_term'], "")
     
     def test_search_view_with_term(self):
@@ -438,7 +438,7 @@ class CollectionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # Vérifier le contexte
-        series = list(response.context['series'}/'
+        series = list(response.context['series'])
         self.assertIn(self.serie, series)
         self.assertEqual(response.context['search_term'], 'Test')
     
@@ -449,13 +449,13 @@ class CollectionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # Vérifier qu'il n'y a pas de résultats
-        series = list(response.context['series'}/'
+        series = list(response.context['series'])
         self.assertEqual(len(series), 0)
     
     def test_serie_detail_view(self):
         """Test de la vue de détail d'une série"""
         self.client.login(username='testuser', password='testpass123')
-        response = self.client.get(f'/collection/serie/{self.serie.id}/')
+        response = self.client.get(f'/collection/serie/{self.serie.id}')
         
         self.assertEqual(response.status_code, 200)
         
@@ -466,7 +466,7 @@ class CollectionViewsTestCase(TestCase):
         self.assertEqual(response.context['completion_percentage'], 100.0)
         
         # Vérifier les volumes
-        volumes = list(response.context['volumes'}/'
+        volumes = list(response.context['volumes'])
         self.assertEqual(len(volumes), 2)
         
         # Vérifier que les volumes sont marqués comme possédés
@@ -477,7 +477,7 @@ class CollectionViewsTestCase(TestCase):
         """Test de la vue de détail pour une série inexistante"""
         self.client.login(username='testuser', password='testpass123')
         fake_id = uuid.uuid4()
-        response = self.client.get(f'/collection/serie/{fake_id}/')
+        response = self.client.get(f'/collection/serie/{fake_id}')
         
         self.assertEqual(response.status_code, 404)
 
@@ -535,19 +535,19 @@ class CollectionIntegrationTestCase(TestCase):
         # 2. Tester la recherche
         response = self.client.get('/collection/search/', {'search': 'One Piece'})
         self.assertEqual(response.status_code, 200)
-        series = list(response.context['series'}/'
+        series = list(response.context['series'])
         self.assertEqual(len(series), 1)
         self.assertEqual(series[0].title, "One Piece")
         
         # 3. Tester les détails de série
-        response = self.client.get(f'/collection/serie/{self.serie.id}/')
+        response = self.client.get(f'/collection/serie/{self.serie.id}')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['total_volumes'], 5)
         self.assertEqual(response.context['possessed_volumes'], 3)
         self.assertEqual(response.context['completion_percentage'], 60.0)
         
         # Vérifier les volumes possédés/non possédés
-        volumes = list(response.context['volumes'}/'
+        volumes = list(response.context['volumes'])
         possessed_numbers = [v.number for v in volumes if v.possessed]
         self.assertEqual(set(possessed_numbers), {1, 3, 5})
     
