@@ -31,7 +31,7 @@ jobs:
       - name: Configurer Python
         uses: actions/setup-python@v5
         with:
-        python-version: '3.12'
+          python-version: '3.12'
 
       - name: Installer les dépendances
         run: |
@@ -56,7 +56,7 @@ jobs:
       - name: Lancer les tests
         run: |
           pytest
-          
+
       # 3. Connexion à ACR
       - name: Docker login to ACR
         run: |
