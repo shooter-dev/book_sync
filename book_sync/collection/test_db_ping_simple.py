@@ -33,6 +33,8 @@ def test_database_ping():
         assert response_time < 5000, f"Response time too slow: {response_time:.2f}ms"
 
         print("✅ Database connection is working properly!")
+        
+        print("✅ the pytest worked!")
 
     except ImportError as e:
         pytest.skip(f"Django not available: {e}")

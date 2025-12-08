@@ -30,7 +30,6 @@ jobs:
       # 1.5 configuration python
       - name: Configurer Python
         uses: actions/setup-python@v5
-        
         with: 
           python-version: '3.12'
 
@@ -39,12 +38,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      # 2. Connexion à Azure
-      - name: Azure CLI login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # 2.5 test ping azure
       - name: Lint avec flake8
@@ -57,6 +50,12 @@ jobs:
       - name: Lancer les tests
         run: |
           pytest
+          
+      # 2. Connexion à Azure
+      - name: Azure CLI login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # 3. Connexion à ACR
       - name: Docker login to ACR
