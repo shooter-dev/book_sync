@@ -30,7 +30,8 @@ jobs:
       # 1.5 configuration python
       - name: Configurer Python
         uses: actions/setup-python@v5
-        with:
+        
+        with: 
           python-version: '3.12'
 
       - name: Installer les dépendances
