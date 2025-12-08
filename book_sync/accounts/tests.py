@@ -212,8 +212,8 @@ class ProfileTestCase(TestCase):
         self.assertIn('genres_data', response.context)
         
         # Vérifier les données JSON
-        kinds_data = json.loads(response.context['kinds_data'}/'
-        genres_data = json.loads(response.context['genres_data'}/'
+        kinds_data = json.loads(response.context['kinds_data'])
+        genres_data = json.loads(response.context['genres_data'])
         
         self.assertEqual(len(kinds_data), 1)
         self.assertEqual(len(genres_data), 1)

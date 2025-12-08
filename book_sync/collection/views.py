@@ -209,7 +209,6 @@ def delete_volume_collection(request, volume_id):
         Possession.objects.filter(user=request.user, volume=volume).delete()
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
-    print("Referer:", referer)
 
 def search_series(search_term):
     """

@@ -131,8 +131,8 @@ class LectureViewsTestCase(TestCase):
             Possession.objects.create(user=self.premium_user, volume=volume)
         
         # Marquer certains volumes comme lus
-        Read.objects.create(user=self.premium_user, volume=self.volumes[0}/'  # Volume 1
-        Read.objects.create(user=self.premium_user, volume=self.volumes[1}/'  # Volume 2
+        Read.objects.create(user=self.premium_user, volume=self.volumes[0])  # Volume 1
+        Read.objects.create(user=self.premium_user, volume=self.volumes[1])  # Volume 2
     
     def test_lecture_view_requires_login(self):
         """Test que la vue lecture nécessite une connexion"""
@@ -170,13 +170,13 @@ class LectureViewsTestCase(TestCase):
         self.assertEqual(stats['progression_collection'], 67)  # 2/3 * 100 arrondi
         
         # Vérifier les lectures de collection
-        collection_read = list(response.context['collection_read'}/'
+        collection_read = list(response.context['collection_read'])
         self.assertEqual(len(collection_read), 2)
         
         # Vérifier la pile à lire
-        to_read = list(response.context['to_read_collection'}/'
+        to_read = list(response.context['to_read_collection'])
         self.assertEqual(len(to_read), 1)
-        self.assertEqual(to_read[0].volume, self.volumes[2}/'  # Volume 3
+        self.assertEqual(to_read[0].volume, self.volumes[2])  # Volume 3
     
     def test_add_read_requires_login(self):
         """Test que add_read nécessite une connexion"""
@@ -338,11 +338,11 @@ class LectureStatisticsTestCase(TestCase):
         
         # Marquer certains volumes comme lus
         # Série 1: 2/3 volumes lus
-        Read.objects.create(user=self.user, volume=self.volumes_serie1[0}/'
-        Read.objects.create(user=self.user, volume=self.volumes_serie1[1}/'
+        Read.objects.create(user=self.user, volume=self.volumes_serie1[0])
+        Read.objects.create(user=self.user, volume=self.volumes_serie1[1])
         
         # Série 2: 1/2 volumes lus
-        Read.objects.create(user=self.user, volume=self.volumes_serie2[0}/'
+        Read.objects.create(user=self.user, volume=self.volumes_serie2[0])
     
     def test_statistics_calculation(self):
         """Test du calcul des statistiques"""
@@ -388,7 +388,7 @@ class LectureStatisticsTestCase(TestCase):
         self.assertEqual(stats['total_read_collection'], 0)
         self.assertEqual(stats['pile_a_lire'], 0)
         self.assertEqual(stats['progression_collection'], 0)
-        self.assertEqual(len(stats['series_stats'}/', 0)
+        self.assertEqual(len(stats['series_stats']), 0)
 
 class LectureIntegrationTestCase(TestCase):
     """Tests d'intégration pour le module lecture"""
@@ -450,11 +450,11 @@ class LectureIntegrationTestCase(TestCase):
         self.assertEqual(stats['progression_collection'], 60)  # 3/5 * 100
         
         # Vérifier les lectures dans la collection
-        collection_read = list(response.context['collection_read'}/'
+        collection_read = list(response.context['collection_read'])
         self.assertEqual(len(collection_read), 3)
         
         # Vérifier la pile à lire
-        to_read = list(response.context['to_read_collection'}/'
+        to_read = list(response.context['to_read_collection'])
         self.assertEqual(len(to_read), 2)
         
         # 4. Supprimer une lecture
@@ -470,7 +470,7 @@ class LectureIntegrationTestCase(TestCase):
         self.assertEqual(stats['progression_collection'], 40)  # 2/5 * 100
         
         # Vérifier que le volume 2 n'est plus dans les lectures
-        collection_read = list(response.context['collection_read'}/'
+        collection_read = list(response.context['collection_read'])
         read_volume_numbers = [read.volume.number for read in collection_read]
         self.assertNotIn(2, read_volume_numbers)
         self.assertIn(1, read_volume_numbers)
@@ -492,7 +492,7 @@ class LectureIntegrationTestCase(TestCase):
         response = self.client.get('/ma-lecture/lecture/')
         
         # Vérifier que ce volume apparaît dans non_collection_read
-        non_collection_read = list(response.context['non_collection_read'}/'
+        non_collection_read = list(response.context['non_collection_read'])
         self.assertEqual(len(non_collection_read), 1)
         self.assertEqual(non_collection_read[0].volume, non_owned_volume)
         

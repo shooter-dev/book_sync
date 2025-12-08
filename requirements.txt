@@ -5,3 +5,4 @@ uvicorn
 pandas
 psycopg2
 requests
+flake8
